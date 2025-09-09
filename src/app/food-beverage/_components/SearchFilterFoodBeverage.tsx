@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function SearchFilterFoodBeverage({ filter, setFilter }: any) {
   return (
     <section>
-      <div className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center justify-center">
-        <div className="pb-4">
-          <div className="w-[390px] h-[300px] rounded-b-4xl bg-white shadow-lg">
+      <div className="flex flex-col items-center justify-center w-full">
+        <div className="border border-red-500 w-full">
+          <div className="w-full p-4 rounded-b-4xl bg-white shadow-lg">
             {/* Title */}
-            <div className="flex flex-row items-center gap-4 px-4 py-6">
+            {/* <div className="flex flex-row items-center gap-4 px-4 py-6 border border-red-500">
               <Link href="/">
                 <Image
                   src="/icons/Arrow.svg"
@@ -22,7 +22,7 @@ export default function SearchFilterFoodBeverage({ filter, setFilter }: any) {
                 <p className="font-bold">Food & Beverage</p>
                 <p className="text-[12px]">Food & Beverage Delivery</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex flex-col bg-[#4F3534] text-white rounded-2xl px-4 py-4 mx-4 gap-2">
               <p>Delivery To Room 120</p>
@@ -52,7 +52,7 @@ export default function SearchFilterFoodBeverage({ filter, setFilter }: any) {
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`flex items-center justify-center w-[100px] rounded-2xl py-1 cursor-pointer ${
+                  className={`flex items-center justify-center w-full rounded-2xl py-1 cursor-pointer ${
                     filter === cat
                       ? "bg-[#4F3534] text-white"
                       : "border border-[#4F3534] text-[#4F3534]"
