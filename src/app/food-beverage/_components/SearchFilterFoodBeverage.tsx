@@ -9,7 +9,7 @@ export default function SearchFilterFoodBeverage({ filter, setFilter }: any) {
           <div className="w-[390px] h-[300px] rounded-b-4xl bg-white shadow-lg">
             {/* Title */}
             <div className="flex flex-row items-center gap-4 px-4 py-6">
-              <Link href="/home-page">
+              <Link href="/">
                 <Image
                   src="/icons/Arrow.svg"
                   alt="Arrow"
