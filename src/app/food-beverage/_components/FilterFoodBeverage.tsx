@@ -94,7 +94,7 @@ export default function FilterFoodBeverage({
                     width: "100%",
                     cursor: "pointer",
                     overflow: "hidden",
-                    borderRadius: 3,
+                    borderRadius: 2,
                     border: "2px solid",
                     borderColor:
                       currentFilter === cat.id ? "#A67472" : "#FFFFFF",
