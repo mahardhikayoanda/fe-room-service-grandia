@@ -12,7 +12,11 @@ export default function BackHeader({ title }: Props) {
 
   return (
     <div className="bg-white flex gap-1 items-center">
-      <ArrowLeft size={24} className="text-primary" />
+      <ArrowLeft
+        size={24}
+        className="text-primary cursor-pointer"
+        onClick={() => route.back()}
+      />
       <Typography
         variant="body1"
         sx={{
