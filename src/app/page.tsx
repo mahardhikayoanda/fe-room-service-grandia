@@ -6,10 +6,10 @@ import OurPromoSection from "./_containers/OurPromoSection";
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-gray-100">
+    <div className="relative w-full min-h-screen bg-gray-100">
       <HeroSection />
       <OurPromoSection />
-      <div className="absolute bottom-0 w-full">
+      <div className="fixed bottom-0 left-0 right-0">
         <RoomInformationDrawer />
       </div>
     </div>

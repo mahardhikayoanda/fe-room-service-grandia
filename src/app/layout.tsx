@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import ToastWrapper from "@/components/ToastWrapper";
 import Providers from "./providers";
+import ThemeProvider from "./ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,9 @@ export default function RootLayout({
           <ToastWrapper />
           <Providers>
             <main className="bg-gray-300 min-h-screen flex flex-col justify-center items-center">
-              <div className="max-w-sm min-h-screen">{children}</div>
+              <div className="max-w-sm min-h-screen text-primary-text-color">
+                <ThemeProvider>{children}</ThemeProvider>
+              </div>
             </main>
           </Providers>
         </Suspense>

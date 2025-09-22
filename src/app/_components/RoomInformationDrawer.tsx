@@ -6,6 +6,7 @@ import {
   SwipeableDrawer,
   Typography,
 } from "@mui/material";
+import { Home } from "lucide-react";
 import { useState } from "react";
 
 export default function RoomInformationDrawer() {
@@ -23,13 +24,18 @@ export default function RoomInformationDrawer() {
     <>
       {/* Room Information Trigger */}
       <div
-        className="flex justify-between items-center border border-gray-300 rounded-t-4xl px-4 py-6 bg-white shadow-md"
+        className="w-full flex justify-between items-center border border-gray-300 rounded-t-4xl px-4 py-6 bg-white shadow-md"
         onClick={handleDrawerOpen}
       >
         <Typography variant="body2" fontWeight="bold" color="textDisabled">
           ROOM INFORMATION
         </Typography>
-        <Typography variant="body2" fontWeight="semibold" color="primary">
+        <Typography
+          variant="body2"
+          fontWeight="bold"
+          color="primary"
+          className="cursor-pointer"
+        >
           SHOW DETAILS
         </Typography>
       </div>
@@ -74,21 +80,42 @@ export default function RoomInformationDrawer() {
             <Typography variant="body2" fontWeight="bold" color="textDisabled">
               ROOM INFORMATION
             </Typography>
-            <Typography variant="body2" fontWeight="semibold" color="primary">
-              Hide
+            <Typography
+              variant="body2"
+              fontWeight="bold"
+              color="primary"
+              onClick={handleDrawerClose}
+              className="cursor-pointer"
+            >
+              HIDE
             </Typography>
           </Box>
 
           <Divider sx={{ mb: 1 }} />
 
           {/* Room Details */}
-          <Card sx={{ mb: 0.5, boxShadow: 0 }}>
-            <CardContent>
-              <Typography variant="body2" fontWeight="semibold">
-                Lorem ipsum
+          <div className="flex gap-2">
+            <div className="p-2 bg-secondary rounded-full">
+              <Home size={20} className="text-primary" />
+            </div>
+            <div className="flex flex-col">
+              <Typography
+                variant="body1"
+                fontWeight="bold"
+                className="text-primary"
+              >
+                Room 120
               </Typography>
-            </CardContent>
-          </Card>
+
+              <Typography
+                variant="body2"
+                fontWeight="semibold"
+                className="text-custom-gray-500"
+              >
+                Deluxe Suite - 3rd floor
+              </Typography>
+            </div>
+          </div>
         </Box>
       </SwipeableDrawer>
     </>
