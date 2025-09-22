@@ -13,7 +13,7 @@ export const menusDummyData: MenusType[] = [
       url: "/images/menus/foods/AvocadoToast.png",
     },
     best_seller: true,
-    recommended: true,
+    recommended: false,
   },
   {
     uuid: "2",
@@ -53,7 +53,7 @@ export const menusDummyData: MenusType[] = [
       url: "/images/menus/foods/BurgerBeefWagyu.png",
     },
     best_seller: false,
-    recommended: true,
+    recommended: false,
   },
   {
     uuid: "5",
@@ -65,7 +65,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img5",
       url: "/images/menus/foods/ShrimpMisoRamen.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
 
@@ -80,7 +80,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img6",
       url: "/images/menus/drinks/OrangeMojito.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
   {
@@ -95,7 +95,7 @@ export const menusDummyData: MenusType[] = [
       url: "/images/menus/drinks/CapuuccinoLotus.png",
     },
     best_seller: false,
-    recommended: true,
+    recommended: false,
   },
   {
     uuid: "8",
@@ -108,7 +108,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img8",
       url: "/images/menus/drinks/SweetTea.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
   {
@@ -123,7 +123,7 @@ export const menusDummyData: MenusType[] = [
       url: "/images/menus/drinks/MelonSquash.png",
     },
     best_seller: false,
-    recommended: true,
+    recommended: false,
   },
 
   {
@@ -137,7 +137,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img10",
       url: "/images/menus/desserts/RiceKrispies.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
   {
@@ -152,7 +152,7 @@ export const menusDummyData: MenusType[] = [
       url: "/images/menus/desserts/RaspberryTart.png",
     },
     best_seller: false,
-    recommended: true,
+    recommended: false,
   },
   {
     uuid: "12",
@@ -164,7 +164,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img12",
       url: "/images/menus/desserts/ChocolateLavaCake.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
   {
@@ -178,7 +178,7 @@ export const menusDummyData: MenusType[] = [
       uuid: "img13",
       url: "/images/menus/desserts/ChocolateSundae.png",
     },
-    best_seller: true,
+    best_seller: false,
     recommended: false,
   },
 ];

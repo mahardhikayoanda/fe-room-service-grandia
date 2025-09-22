@@ -1,26 +1,34 @@
 "use client";
 
-import type React from "react";
-
-import { getValueByPath } from "@/utils";
 import {
-  type Control,
+  Control,
   Controller,
-  type ControllerRenderProps,
-  type FieldValues,
-  type Path,
+  ControllerRenderProps,
+  FieldValues,
+  Path,
 } from "react-hook-form";
 
-export interface RenderProps<T extends FieldValues = FieldValues>
-  extends ControllerRenderProps<T, Path<T>> {
+import { getValueByPath } from "@/utils/index";
+
+export interface RenderProps
+  extends ControllerRenderProps<FieldValues, string> {
   error: boolean;
   helperText: string | undefined;
 }
 
 interface Props<T extends FieldValues> {
   name: Path<T>;
-  control?: Control<T>;
-  render: (props: RenderProps<T>) => React.ReactElement;
+  control?: Control<T, any, FieldValues>;
+  render: ({
+    error,
+    helperText,
+    name,
+    onBlur,
+    onChange,
+    ref,
+    value,
+    disabled,
+  }: RenderProps) => React.ReactElement;
 }
 
 const ControllWrapper = <T extends FieldValues>({

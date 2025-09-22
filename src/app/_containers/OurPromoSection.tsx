@@ -9,7 +9,7 @@ import React from "react";
 export default function OurPromoSection() {
   return (
     <section>
-      <h2 className="pl-6 font-bold text-black text-sm mt-5">OUR PROMO</h2>
+      <h2 className="pl-6 font-bold text-black text-sm mt-4 mb-2">OUR PROMO</h2>
       <div className="flex">
         <Swiper
           spaceBetween={32}

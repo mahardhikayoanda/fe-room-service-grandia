@@ -38,7 +38,7 @@ export default function RootLayout({
           <ToastWrapper />
           <Providers>
             <main className="bg-gray-300 min-h-screen flex flex-col justify-center items-center">
-              <div className="max-w-sm min-h-screen text-primary-text-color">
+              <div className="max-w-sm min-h-screen bg-gray-100 text-primary-text-color">
                 <ThemeProvider>{children}</ThemeProvider>
               </div>
             </main>

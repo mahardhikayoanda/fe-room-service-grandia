@@ -1,5 +1,7 @@
 "use client";
 
+import { Typography } from "@mui/material";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function AddMenuButton() {
@@ -13,9 +15,18 @@ export default function AddMenuButton() {
       {step === "add" && (
         <button
           onClick={() => setIsRequestOpen(true)}
-          className="px-4 py-1 border border-black rounded-full text-black font-bold cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-1 px-4 py-1 border border-primary rounded-full cursor-pointer hover:bg-gray-100"
         >
-          + Add
+          <Plus size={12} fontWeight={700} className="text-primary" />
+          <Typography
+            sx={{
+              fontWeight: "700",
+              color: "#4F3534",
+              fontSize: "12px",
+            }}
+          >
+            Add item
+          </Typography>
         </button>
       )}
 

@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * Get value of object by dynamic path
  * @param {Record<string, any>} object - The object to get the value from.
@@ -20,6 +23,11 @@ export function getValueByPath(obj: any, path: string): any {
   return result;
 }
 
-export function cn(...classes: (string | undefined | boolean)[]) {
-  return classes.filter(Boolean).join(" ");
-}
+/**
+ * Combines class names using clsx and merges them with Tailwind classes.
+ * @param {...ClassValue} inputs The class values to be combined.
+ * @returns {string} The combined class names.
+ */
+export const cn = (...inputs: ClassValue[]): string => {
+  return twMerge(clsx(inputs));
+};
