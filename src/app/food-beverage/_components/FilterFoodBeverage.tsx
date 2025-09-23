@@ -61,7 +61,7 @@ export default function FilterFoodBeverage({
   }, [filterValue, onFilterValue]);
 
   return (
-    <Box sx={{ px: 2, pb: 2, background: "white", mb: 2 }}>
+    <Box sx={{ px: 3, pb: 2, background: "white", mb: 2 }}>
       <Typography
         variant="body1"
         sx={{
@@ -114,7 +114,7 @@ export default function FilterFoodBeverage({
                   <Box sx={{ alignItems: "center" }}>
                     <Box
                       sx={{
-                        width: 106,
+                        width: 104,
                         height: 57,
                         position: "relative",
                         backgroundColor: "#f5f5f5",

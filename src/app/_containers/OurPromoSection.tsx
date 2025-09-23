@@ -31,8 +31,8 @@ export default function OurPromoSection() {
               src="/images/promo/promo1.png"
               alt="Promo 1"
               width={340}
-              height={160}
-              className="rounded-lg cursor-pointer"
+              height={100}
+              className="rounded-lg cursor-pointer aspect-video"
             />
           </SwiperSlide>
           <SwiperSlide>
@@ -40,8 +40,17 @@ export default function OurPromoSection() {
               src="/images/promo/promo1.png"
               alt="Promo 1"
               width={340}
-              height={160}
-              className="rounded-lg cursor-pointer"
+              height={100}
+              className="rounded-lg cursor-pointer aspect-video"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <Image
+              src="/images/promo/promo1.png"
+              alt="Promo 2"
+              width={340}
+              height={100}
+              className="rounded-lg cursor-pointer aspect-video"
             />
           </SwiperSlide>
           <SwiperSlide>
@@ -50,16 +59,7 @@ export default function OurPromoSection() {
               alt="Promo 2"
               width={340}
               height={160}
-              className="rounded-lg cursor-pointer"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <Image
-              src="/images/promo/promo1.png"
-              alt="Promo 2"
-              width={340}
-              height={160}
-              className="rounded-lg cursor-pointer"
+              className="rounded-lg cursor-pointer aspect-video"
             />
           </SwiperSlide>
         </Swiper>

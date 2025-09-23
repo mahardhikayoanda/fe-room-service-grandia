@@ -1,94 +1,103 @@
 "use client";
 
-import { Typography } from "@mui/material";
+import {
+  Typography,
+  Button,
+  IconButton,
+  Box,
+  Modal,
+  TextField,
+} from "@mui/material";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function AddMenuButton() {
-  const [step, setStep] = useState("add");
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0);
   const [request, setRequest] = useState("");
   const [isRequestOpen, setIsRequestOpen] = useState(false);
 
   return (
     <>
-      {step === "add" && (
-        <button
-          onClick={() => setIsRequestOpen(true)}
-          className="flex items-center gap-1 px-4 py-1 border border-primary rounded-full cursor-pointer hover:bg-gray-100"
+      <Button
+        onClick={() => setIsRequestOpen(true)}
+        variant="outlined"
+        sx={{
+          width: "90px",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
+          py: 0.5,
+          borderRadius: "9999px",
+          textTransform: "none",
+          borderColor: "#4F3534",
+          "&:hover": { backgroundColor: "grey.100" },
+        }}
+      >
+        {count < 0 && <Plus size={12} strokeWidth={3} color="#4F3534" />}
+        <Typography
+          sx={{
+            fontWeight: 700,
+            color: "#4F3534",
+            fontSize: "12px",
+          }}
         >
-          <Plus size={12} fontWeight={700} className="text-primary" />
-          <Typography
+          {count ? `${count} Item${count > 1 ? "s" : ""}` : "Add item"}
+        </Typography>
+      </Button>
+
+      <Modal open={isRequestOpen} onClose={() => setIsRequestOpen(false)}>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 390,
+            bgcolor: "background.paper",
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            p: 2,
+            boxShadow: 3,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+            Request
+          </Typography>
+          <TextField
+            multiline
+            minRows={3}
+            fullWidth
+            placeholder="Enter Request"
+            value={request}
+            onChange={(e) => setRequest(e.target.value)}
             sx={{
-              fontWeight: "700",
-              color: "#4F3534",
-              fontSize: "12px",
+              mb: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+              },
+            }}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => {
+              setCount(count + 1);
+              setIsRequestOpen(false);
+            }}
+            sx={{
+              bgcolor: "black",
+              color: "white",
+              py: 1,
+              borderRadius: "12px",
+              fontWeight: "bold",
+              "&:hover": { bgcolor: "#333" },
             }}
           >
-            Add item
-          </Typography>
-        </button>
-      )}
-
-      {step === "counter" && (
-        <div className="flex flex-row items-center gap-2">
-          <button
-            onClick={() =>
-              setCount((prev) => {
-                if (prev - 1 <= 0) {
-                  setStep("add");
-                  return 0;
-                }
-                return prev - 1;
-              })
-            }
-            className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-black cursor-pointer"
-          >
-            -
-          </button>
-
-          <div className="w-6 h-6 flex items-center justify-center rounded-full bg-black text-white font-bold text-sm">
-            {count}
-          </div>
-
-          <button
-            onClick={() => setCount((prev) => prev + 1)}
-            className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-black cursor-pointer"
-          >
-            +
-          </button>
-        </div>
-      )}
-
-      {isRequestOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex justify-center items-end z-[9999]"
-          onClick={() => setIsRequestOpen(false)}
-        >
-          <div
-            className="bg-white w-[390px] rounded-t-2xl p-4 shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="font-bold mb-2">Request</h3>
-            <textarea
-              value={request}
-              onChange={(e) => setRequest(e.target.value)}
-              placeholder="Enter Request"
-              className="w-full border border-gray-400 rounded-xl p-2 text-sm mb-4"
-            />
-            <button
-              onClick={() => {
-                setStep("counter");
-                setCount(1);
-                setIsRequestOpen(false);
-              }}
-              className="w-full bg-black text-white py-2 rounded-xl font-bold cursor-pointer"
-            >
-              Add To Cart
-            </button>
-          </div>
-        </div>
-      )}
+            Add To Cart
+          </Button>
+        </Box>
+      </Modal>
     </>
   );
 }
