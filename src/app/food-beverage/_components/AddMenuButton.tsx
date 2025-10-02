@@ -1,5 +1,7 @@
 "use client";
 
+import BottomSheet from "@/components/BottomSheet";
+import { formatCurrency } from "@/utils";
 import {
   Typography,
   Button,
@@ -11,15 +13,21 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-export default function AddMenuButton() {
+interface Props {
+  titleMenu?: string;
+  priceMenu?: string;
+}
+
+export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
+  const [openBottomSheet, setOpenBottomSheet] = useState(false);
   const [count, setCount] = useState(0);
   const [request, setRequest] = useState("");
-  const [isRequestOpen, setIsRequestOpen] = useState(false);
+  // const [isRequestOpen, setIsRequestOpen] = useState(false);
 
   return (
     <>
       <Button
-        onClick={() => setIsRequestOpen(true)}
+        onClick={() => setOpenBottomSheet(true)}
         variant="outlined"
         sx={{
           width: "90px",
@@ -45,59 +53,34 @@ export default function AddMenuButton() {
         </Typography>
       </Button>
 
-      <Modal open={isRequestOpen} onClose={() => setIsRequestOpen(false)}>
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: 390,
-            bgcolor: "background.paper",
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            p: 2,
-            boxShadow: 3,
+      <BottomSheet
+        open={openBottomSheet}
+        onClose={() => setOpenBottomSheet(false)}
+        title={titleMenu}
+      >
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+          {formatCurrency(Number(priceMenu || 0))}
+        </Typography>
+
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => {
+            setCount(count + 1);
+            setOpenBottomSheet(false);
           }}
-          onClick={(e) => e.stopPropagation()}
+          sx={{
+            bgcolor: "#4F3534",
+            color: "white",
+            py: 1,
+            borderRadius: "99px",
+            fontWeight: "bold",
+            "&:hover": { bgcolor: "#333" },
+          }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-            Request
-          </Typography>
-          <TextField
-            multiline
-            minRows={3}
-            fullWidth
-            placeholder="Enter Request"
-            value={request}
-            onChange={(e) => setRequest(e.target.value)}
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px",
-              },
-            }}
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => {
-              setCount(count + 1);
-              setIsRequestOpen(false);
-            }}
-            sx={{
-              bgcolor: "black",
-              color: "white",
-              py: 1,
-              borderRadius: "12px",
-              fontWeight: "bold",
-              "&:hover": { bgcolor: "#333" },
-            }}
-          >
-            Add To Cart
-          </Button>
-        </Box>
-      </Modal>
+          Adjust the modifier
+        </Button>
+      </BottomSheet>
     </>
   );
 }

@@ -31,3 +31,16 @@ export function getValueByPath(obj: any, path: string): any {
 export const cn = (...inputs: ClassValue[]): string => {
   return twMerge(clsx(inputs));
 };
+
+export function formatCurrency(
+  amount: number,
+  locale = "id-ID",
+  currency = "IDR"
+): string {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
