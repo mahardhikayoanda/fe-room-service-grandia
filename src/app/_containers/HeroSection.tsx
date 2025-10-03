@@ -33,6 +33,7 @@ export default function HeroSection() {
             </div>
           </Link>
 
+          <Link href="/customer-service">
           <div className="w-[150px] h-[148px] bg-white text-center rounded-xl gap-1 flex flex-col items-center justify-center shadow-lg border border-gray-100">
             <div className="bg-[#F4F0F0] rounded-full p-2 mb-1">
               <Headset size={24} className="text-primary" />
@@ -44,6 +45,7 @@ export default function HeroSection() {
               Get Assistance Anytime
             </p>
           </div>
+        </Link>
         </div>
       </section>
     </>
