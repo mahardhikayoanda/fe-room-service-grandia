@@ -116,6 +116,8 @@ export default function MenuList({ filterValue, searchValue }: Props) {
                       src={item.image.url}
                       alt={item.name}
                       fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-contain rounded-xl"
                     />
                   </div>
