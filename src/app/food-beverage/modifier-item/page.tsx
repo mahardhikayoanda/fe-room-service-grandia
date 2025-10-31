@@ -100,7 +100,7 @@ export default function ModifierItemPage() {
   };
 
   return (
-    <Box className="min-h-screen bg-[#F2F2F2] pb-0 relative">
+    <Box className="max-w-sm min-h-screen bg-[#F2F2F2] pb-0 relative">
       {/* Header with Image */}
       <MenuHeader
         title={menuData.title}
@@ -135,12 +135,13 @@ export default function ModifierItemPage() {
         {/* Quantity Selector */}
       </div>
 
-      {/* Add to Cart Button (Fixed Bottom) */}
       {/* <AddToCartButton
         price={menuData.price * quantity}
         onClick={handleAddToCart}
       /> */}
-      <div className="fixed bottom-0 left-0 w-full px-6 pb-4 pt-3 bg-white border-t border-gray-200">
+
+      {/* Add to Cart Button (Fixed Bottom) */}
+      <div className="max-w-sm w-full fixed bottom-0 left-1/2 -translate-x-1/2 px-6 pb-4 pt-3 bg-white border-t border-gray-200">
         <QuantitySelector
           quantity={quantity}
           onIncrease={handleIncrease}

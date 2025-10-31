@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import React from "react";
 
 interface Props {

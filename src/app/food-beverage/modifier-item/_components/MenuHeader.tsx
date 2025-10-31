@@ -3,7 +3,7 @@
 import React from "react";
 import { Box, IconButton, Typography, Chip } from "@mui/material";
 import { ArrowLeft, ThumbsUp, Trophy } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import Image from "next/image";
 
 interface MenuHeaderProps {

@@ -1,3 +1,4 @@
+import SwipeableDrawerWrapper from "@/components/SwipeableDrawerWrapper";
 import {
   Box,
   Card,
@@ -41,83 +42,60 @@ export default function RoomInformationDrawer() {
       </div>
 
       {/* SwipeableDrawer Component */}
-      <SwipeableDrawer
-        anchor="bottom"
+      <SwipeableDrawerWrapper
         open={drawerOpen}
         onClose={handleDrawerClose}
         onOpen={handleDrawerOpen}
-        disableSwipeToOpen={false}
-        PaperProps={{
-          sx: {
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            maxHeight: "80vh",
-          },
-        }}
       >
-        <Box sx={{ width: "auto", p: 2 }}>
-          {/* Handle bar */}
-          <Box
-            sx={{
-              width: 40,
-              height: 4,
-              backgroundColor: "grey.300",
-              borderRadius: 2,
-              mx: "auto",
-              mb: 1,
-            }}
-          />
-
-          {/* Header */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 1,
-            }}
+        {/* Header */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight="bold" color="textDisabled">
+            ROOM INFORMATION
+          </Typography>
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            color="primary"
+            onClick={handleDrawerClose}
+            className="cursor-pointer"
           >
-            <Typography variant="body2" fontWeight="bold" color="textDisabled">
-              ROOM INFORMATION
+            HIDE
+          </Typography>
+        </Box>
+
+        <Divider sx={{ mb: 1 }} />
+
+        {/* Room Details */}
+        <div className="flex gap-2">
+          <div className="p-2 bg-secondary rounded-full">
+            <Home size={20} className="text-primary" />
+          </div>
+          <div className="flex flex-col">
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              className="text-primary"
+            >
+              Room 120
             </Typography>
+
             <Typography
               variant="body2"
-              fontWeight="bold"
-              color="primary"
-              onClick={handleDrawerClose}
-              className="cursor-pointer"
+              fontWeight="semibold"
+              className="text-custom-gray-500"
             >
-              HIDE
+              Deluxe Suite - 3rd floor
             </Typography>
-          </Box>
-
-          <Divider sx={{ mb: 1 }} />
-
-          {/* Room Details */}
-          <div className="flex gap-2">
-            <div className="p-2 bg-secondary rounded-full">
-              <Home size={20} className="text-primary" />
-            </div>
-            <div className="flex flex-col">
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                className="text-primary"
-              >
-                Room 120
-              </Typography>
-
-              <Typography
-                variant="body2"
-                fontWeight="semibold"
-                className="text-custom-gray-500"
-              >
-                Deluxe Suite - 3rd floor
-              </Typography>
-            </div>
           </div>
-        </Box>
-      </SwipeableDrawer>
+        </div>
+      </SwipeableDrawerWrapper>
     </>
   );
 }

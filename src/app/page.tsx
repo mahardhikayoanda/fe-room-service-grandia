@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="relative w-full min-h-screen bg-gray-100">
       <HeroSection />
       <OurPromoSection />
-      <div className="fixed bottom-0 left-0 right-0">
+      <div className="max-w-sm w-full fixed bottom-0 left-1/2 -translate-x-1/2">
         <RoomInformationDrawer />
       </div>
     </div>

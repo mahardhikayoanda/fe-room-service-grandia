@@ -1,16 +1,8 @@
 "use client";
 
-import BottomSheet from "@/components/BottomSheet";
-import { formatCurrency } from "@/utils";
-import {
-  Typography,
-  Button,
-  IconButton,
-  Box,
-  Modal,
-  TextField,
-} from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import { Plus } from "lucide-react";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 
 interface Props {
@@ -19,15 +11,22 @@ interface Props {
 }
 
 export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
-  const [openBottomSheet, setOpenBottomSheet] = useState(false);
+  // const [openBottomSheet, setOpenBottomSheet] = useState(false);
   const [count, setCount] = useState(0);
-  const [request, setRequest] = useState("");
+  // const [request, setRequest] = useState("");
   // const [isRequestOpen, setIsRequestOpen] = useState(false);
+
+  const router = useRouter();
+
+  // route to modifier-item page
+  const handleAddItem = () => {
+    router.push(`/food-beverage/modifier-item`);
+  };
 
   return (
     <>
       <Button
-        onClick={() => setOpenBottomSheet(true)}
+        onClick={handleAddItem}
         variant="outlined"
         sx={{
           width: "90px",
@@ -53,7 +52,7 @@ export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
         </Typography>
       </Button>
 
-      <BottomSheet
+      {/* <BottomSheet
         open={openBottomSheet}
         onClose={() => setOpenBottomSheet(false)}
         title={titleMenu}
@@ -73,14 +72,15 @@ export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
             bgcolor: "#4F3534",
             color: "white",
             py: 1,
+            textTransform: "none",
             borderRadius: "99px",
-            fontWeight: "bold",
+            fontWeight: "medium",
             "&:hover": { bgcolor: "#333" },
           }}
         >
           Adjust the modifier
         </Button>
-      </BottomSheet>
+      </BottomSheet> */}
     </>
   );
 }
