@@ -1,19 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { useAppDispatch } from "@/libs/hooks/useRedux";
+import { addMenuToCart } from "@/libs/store/slices/cartSlice";
 import MenuHeader from "./_components/MenuHeader";
 import ModifierSection from "./_components/ModifierSection";
 import NotesInput from "./_components/NotesInput";
 import QuantitySelector from "./_components/QuantitySelector";
+import { useRouter } from "nextjs-toploader/app";
 
 // Mock data - sesuaikan dengan data real Anda
 const menuData = {
-  title: "Avocado Toast with egg",
-  subtitle:
+  uuid: "1",
+  name: "Avocado Toast with egg",
+  description:
     "Avocado Toast with Egg: Begin by toasting your favorite bread, then top it with creamy avocado and a perfectly...",
   image: "/images/f_and_b/food.png",
-  price: 24000,
+  basePrice: 24000,
   isRecommended: true,
   isBestSeller: false,
 };
@@ -22,6 +26,7 @@ const modifierOptions = [
   {
     uuid: "01",
     name: "Pilihan Telor",
+
     is_required: true,
     can_choose_multiple: false,
     options: [
@@ -58,6 +63,9 @@ const modifierOptions = [
 ];
 
 export default function ModifierItemPage() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
   // Initialize state with first option from each modifier group
   const [selectedModifiers, setSelectedModifiers] = useState<
     Record<string, string[]>
@@ -76,17 +84,32 @@ export default function ModifierItemPage() {
   };
 
   const handleAddToCart = () => {
-    const orderData = {
-      menu: menuData.title,
-      modifiers: selectedModifiers,
+    // Transform selectedModifiers to match the expected structure
+    const modifiers = modifierOptions
+      .filter((modifier) => selectedModifiers[modifier.uuid]?.length > 0)
+      .map((modifier) => ({
+        uuid: modifier.uuid,
+        name: modifier.name,
+        options: modifier.options.filter((option) =>
+          selectedModifiers[modifier.uuid].includes(option.uuid)
+        ),
+      }));
+
+    const menuToAdd = {
+      uuid: menuData.uuid,
+      name: menuData.name,
+      modifiers,
       notes,
       quantity,
-      totalPrice: menuData.price * quantity,
+      basePrice: menuData.basePrice,
+      totalPrice: menuData.basePrice * quantity,
     };
 
-    console.log("Order data:", orderData);
-    // Implementasi add to cart di sini
-    // Misalnya: dispatch(addToCart(orderData)) atau API call
+    // Dispatch to Redux store
+    dispatch(addMenuToCart(menuToAdd));
+
+    // Optional: Reset form or navigate to cart
+    router.back();
   };
 
   const handleIncrease = () => {
@@ -103,11 +126,11 @@ export default function ModifierItemPage() {
     <Box className="max-w-sm min-h-screen bg-[#F2F2F2] pb-0 relative">
       {/* Header with Image */}
       <MenuHeader
-        title={menuData.title}
-        subtitle={menuData.subtitle}
+        title={menuData.name}
+        subtitle={menuData.description}
         image={menuData.image}
         isRecommended={menuData.isRecommended}
-        price={menuData.price}
+        price={menuData.basePrice}
         isBestSeller={menuData.isBestSeller}
       />
 
@@ -131,14 +154,7 @@ export default function ModifierItemPage() {
 
         {/* Notes Input */}
         <NotesInput value={notes} onChange={setNotes} />
-
-        {/* Quantity Selector */}
       </div>
-
-      {/* <AddToCartButton
-        price={menuData.price * quantity}
-        onClick={handleAddToCart}
-      /> */}
 
       {/* Add to Cart Button (Fixed Bottom) */}
       <div className="max-w-sm w-full fixed bottom-0 left-1/2 -translate-x-1/2 px-6 pb-4 pt-3 bg-white border-t border-gray-200">
@@ -156,6 +172,7 @@ export default function ModifierItemPage() {
             py: 1,
             borderRadius: "99px",
             fontWeight: "bold",
+            textTransform: "none",
             "&:hover": { bgcolor: "#333" },
           }}
           onClick={handleAddToCart}

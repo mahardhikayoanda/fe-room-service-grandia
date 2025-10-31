@@ -3,24 +3,36 @@
 import { Typography, Button } from "@mui/material";
 import { Plus } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
-import { useState } from "react";
+import { useAppSelector } from "@/libs/hooks/useRedux";
+import { selectSelectedMenus } from "@/libs/store/slices/cartSlice";
+import { useMemo } from "react";
 
 interface Props {
+  menuUuid?: string;
   titleMenu?: string;
   priceMenu?: string;
 }
 
-export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
-  // const [openBottomSheet, setOpenBottomSheet] = useState(false);
-  const [count, setCount] = useState(0);
-  // const [request, setRequest] = useState("");
-  // const [isRequestOpen, setIsRequestOpen] = useState(false);
-
+export default function AddMenuButton({
+  menuUuid,
+  titleMenu,
+  priceMenu,
+}: Props) {
   const router = useRouter();
+  const selectedMenus = useAppSelector(selectSelectedMenus);
+
+  // Calculate total quantity for this specific menu in cart
+  const itemCount = useMemo(() => {
+    if (!menuUuid) return 0;
+
+    return selectedMenus
+      .filter((menu) => menu.uuid === menuUuid)
+      .reduce((total, menu) => total + menu.quantity, 0);
+  }, [selectedMenus, menuUuid]);
 
   // route to modifier-item page
   const handleAddItem = () => {
-    router.push(`/food-beverage/modifier-item`);
+    router.push(`/food-beverage/modifier-item?menuId=${menuUuid}`);
   };
 
   return (
@@ -29,58 +41,33 @@ export default function AddMenuButton({ titleMenu, priceMenu }: Props) {
         onClick={handleAddItem}
         variant="outlined"
         sx={{
-          width: "90px",
+          minWidth: "90px",
           display: "flex",
           alignItems: "center",
           gap: "4px",
           py: 0.5,
+          px: itemCount > 0 ? 1.5 : 2,
           borderRadius: "9999px",
           textTransform: "none",
           borderColor: "#4F3534",
-          "&:hover": { backgroundColor: "grey.100" },
+          backgroundColor: itemCount > 0 ? "#4F3534" : "transparent",
+          "&:hover": {
+            backgroundColor: itemCount > 0 ? "#3d2a29" : "grey.100",
+            borderColor: "#4F3534",
+          },
         }}
       >
-        {count < 0 && <Plus size={12} strokeWidth={3} color="#4F3534" />}
+        {itemCount === 0 && <Plus size={12} strokeWidth={3} color="#4F3534" />}
         <Typography
           sx={{
             fontWeight: 700,
-            color: "#4F3534",
+            color: itemCount > 0 ? "#FFFFFF" : "#4F3534",
             fontSize: "12px",
           }}
         >
-          {count ? `${count} Item${count > 1 ? "s" : ""}` : "Add item"}
+          {itemCount > 0 ? `${itemCount} item` : "Add item"}
         </Typography>
       </Button>
-
-      {/* <BottomSheet
-        open={openBottomSheet}
-        onClose={() => setOpenBottomSheet(false)}
-        title={titleMenu}
-      >
-        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-          {formatCurrency(Number(priceMenu || 0))}
-        </Typography>
-
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => {
-            setCount(count + 1);
-            setOpenBottomSheet(false);
-          }}
-          sx={{
-            bgcolor: "#4F3534",
-            color: "white",
-            py: 1,
-            textTransform: "none",
-            borderRadius: "99px",
-            fontWeight: "medium",
-            "&:hover": { bgcolor: "#333" },
-          }}
-        >
-          Adjust the modifier
-        </Button>
-      </BottomSheet> */}
     </>
   );
 }

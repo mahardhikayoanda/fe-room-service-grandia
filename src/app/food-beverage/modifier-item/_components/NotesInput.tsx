@@ -44,7 +44,7 @@ export default function NotesInput({ value, onChange }: NotesInputProps) {
               borderColor: "#D1D5DB",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "#7C3AED",
+              borderColor: "#4F3534",
             },
           },
         }}

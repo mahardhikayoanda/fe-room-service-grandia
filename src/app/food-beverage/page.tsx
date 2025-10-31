@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import FilterFoodBeverage from "./_components/FilterFoodBeverage";
 import MenuList from "./_components/MenuList";
+import ChartButton from "./_components/ChartButton";
 import BackHeader from "@/components/BackHeader";
 import TextInput from "@/components/form/TextInput";
 import { Fade, InputAdornment, Typography } from "@mui/material";
@@ -85,7 +86,7 @@ export default function FoodBeveragePage() {
       </section>
 
       {/* F&B cart button */}
-      {/* <ChartButton /> */}
+      <ChartButton />
     </div>
   );
 }

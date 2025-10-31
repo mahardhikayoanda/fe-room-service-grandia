@@ -163,7 +163,11 @@ export default function MenuList({ filterValue, searchValue }: Props) {
                     {item.price}
                   </Typography>
 
-                  <AddMenuButton titleMenu={item.name} priceMenu={item.price} />
+                  <AddMenuButton
+                    menuUuid={item.uuid}
+                    titleMenu={item.name}
+                    priceMenu={item.price}
+                  />
                 </div>
 
                 {index !== filteredItems.length - 1 && (
