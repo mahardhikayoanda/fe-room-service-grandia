@@ -79,8 +79,8 @@ export default function FoodBeveragePage() {
       )}
 
       {/* F&B items list */}
-      <section className="flex flex-col items-center justify-center bg-black/25">
-        <div className="w-full min-h-screen bg-white">
+      <section className="flex flex-col items-center justify-center bg-white">
+        <div className="w-full min-h-screen mb-24">
           <MenuList filterValue={filterValue} searchValue={searchValue} />
         </div>
       </section>

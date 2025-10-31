@@ -6,10 +6,7 @@ import AddMenuButton from "./AddMenuButton";
 import { Typography } from "@mui/material";
 import { categoryMenus } from "./FilterFoodBeverage";
 import { SearchX, ThumbsUp, Trophy } from "lucide-react";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import AnimatedItem from "@/components/framer-motion/AnimatedItem";
-import BottomSheet from "@/components/BottomSheet";
 
 interface Props {
   filterValue: string;
@@ -109,6 +106,7 @@ export default function MenuList({ filterValue, searchValue }: Props) {
         <div className="flex flex-col">
           {filteredItems.map((item, index) => (
             <AnimatedItem key={item.uuid} delay={index * 0.05}>
+              {/* tambahkan pb-20 pada card index terakhir */}
               <div className="flex flex-col gap-0">
                 <div className="flex flex-row-reverse justify-center gap-4 mt-4">
                   <div className="w-[90px] h-[90px] relative">

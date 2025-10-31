@@ -10,7 +10,7 @@ import {
 import { Home } from "lucide-react";
 import { useState } from "react";
 
-export default function RoomInformationDrawer() {
+export default function RoomInformation() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerOpen = () => {
