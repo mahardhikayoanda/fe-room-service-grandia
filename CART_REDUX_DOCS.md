@@ -4,6 +4,21 @@
 
 Redux state management untuk shopping cart dengan struktur data yang siap dikirim ke backend.
 
+## 🔄 Redux Persist (sessionStorage)
+
+Cart state menggunakan **Redux Persist** dengan **sessionStorage** untuk:
+
+- ✅ Cart tetap ada saat refresh page
+- ✅ Cart otomatis hilang saat close tab/browser
+- ✅ Lebih aman untuk hotel scenario (multi-user)
+- ✅ Data tidak bertahan antar session
+
+**Cara kerja:**
+
+- Data otomatis tersimpan ke `sessionStorage` setiap kali ada perubahan
+- Data otomatis di-restore saat page reload
+- Data otomatis terhapus saat tab/browser ditutup
+
 ## Struktur Data
 
 ```typescript
@@ -241,7 +256,38 @@ export default function CheckoutPage() {
 
 ## Notes
 
-- Data disimpan sementara di Redux store (in-memory)
-- Data akan hilang saat refresh page (kecuali menggunakan Redux Persist)
-- Struktur data sudah sesuai dengan format yang diharapkan BE
-- Total price otomatis dihitung saat update quantity
+- ✅ Data disimpan di Redux store + sessionStorage
+- ✅ Data persist saat refresh page dalam session yang sama
+- ✅ Data otomatis hilang saat close tab/browser
+- ✅ Struktur data sudah sesuai dengan format yang diharapkan BE
+- ✅ Total price otomatis dihitung saat update quantity
+
+## Manual Clear sessionStorage (Optional)
+
+Jika butuh clear cart secara manual:
+
+```typescript
+// Clear cart via Redux
+dispatch(resetCart());
+
+// Or directly clear sessionStorage
+sessionStorage.removeItem("persist:root");
+```
+
+## Troubleshooting
+
+**Q: Data tidak persist?**
+
+- Pastikan browser mendukung sessionStorage
+- Check console untuk error
+- Pastikan tidak dalam incognito/private mode
+
+**Q: Data tetap ada setelah close tab?**
+
+- Pastikan menggunakan sessionStorage, bukan localStorage
+- Check store.ts configuration
+
+**Q: Hydration error di Next.js?**
+
+- Sudah ditangani dengan noop storage untuk SSR
+- PersistGate dengan loading={null}
