@@ -98,6 +98,7 @@ export default function ModifierItemPage() {
     const menuToAdd = {
       uuid: menuData.uuid,
       name: menuData.name,
+      image: menuData.image,
       modifiers,
       notes,
       quantity,
@@ -134,30 +135,27 @@ export default function ModifierItemPage() {
         isBestSeller={menuData.isBestSeller}
       />
 
-      {/* Main Content */}
-      <div className="pb-[120px]">
-        {/* Modifier Sections */}
-        {modifierOptions.map((modifier) => (
-          <ModifierSection
-            key={modifier.uuid}
-            modifierUuid={modifier.uuid}
-            title={modifier.name}
-            required={modifier.is_required}
-            canChooseMultiple={modifier.can_choose_multiple}
-            options={modifier.options}
-            selectedValues={selectedModifiers[modifier.uuid] || []}
-            onChange={(optionUuids) =>
-              handleModifierChange(modifier.uuid, optionUuids)
-            }
-          />
-        ))}
+      {/* Modifier Sections */}
+      {modifierOptions.map((modifier) => (
+        <ModifierSection
+          key={modifier.uuid}
+          modifierUuid={modifier.uuid}
+          title={modifier.name}
+          required={modifier.is_required}
+          canChooseMultiple={modifier.can_choose_multiple}
+          options={modifier.options}
+          selectedValues={selectedModifiers[modifier.uuid] || []}
+          onChange={(optionUuids) =>
+            handleModifierChange(modifier.uuid, optionUuids)
+          }
+        />
+      ))}
 
-        {/* Notes Input */}
-        <NotesInput value={notes} onChange={setNotes} />
-      </div>
+      {/* Notes Input */}
+      <NotesInput value={notes} onChange={setNotes} />
 
       {/* Add to Cart Button (Fixed Bottom) */}
-      <div className="max-w-sm w-full fixed bottom-0 left-1/2 -translate-x-1/2 px-6 pb-4 pt-3 bg-white border-t border-gray-200">
+      <div className="max-w-sm w-full sticky bottom-0 px-6 pb-4 pt-3 mt-1 bg-white border-t border-gray-200">
         <QuantitySelector
           quantity={quantity}
           onIncrease={handleIncrease}

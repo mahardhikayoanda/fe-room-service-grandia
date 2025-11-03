@@ -54,7 +54,7 @@ export default function ModifierSection({
   };
 
   return (
-    <Box className="mt-2 pt-4 px-6 bg-white">
+    <Box className="mt-1 pt-4 px-6 bg-white">
       <Typography variant="subtitle1" className="font-bold text-gray-800 mb-3">
         {title}
         <Typography

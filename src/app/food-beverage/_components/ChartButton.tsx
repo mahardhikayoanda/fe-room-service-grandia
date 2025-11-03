@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useAppSelector } from "@/libs/hooks/useRedux";
 import {
   selectCartItemCount,
   selectCartTotalPrice,
 } from "@/libs/store/slices/cartSlice";
+import { useRouter } from "nextjs-toploader/app";
 
 export default function ChartButton() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function ChartButton() {
           bottom: 0,
           left: 0,
           right: 0,
-          zIndex: 50,
+          zIndex: 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

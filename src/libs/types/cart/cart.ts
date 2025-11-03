@@ -13,6 +13,7 @@ export interface Modifier {
 export interface SelectedMenu {
   uuid: string;
   name: string;
+  image: string;
   modifiers: Modifier[];
   notes: string;
   quantity: number;
