@@ -59,7 +59,7 @@ export default function TrackingOrderPage() {
   const handleConfirmBack = () => {
     setShowBackConfirm(false);
     // Navigate to food-beverage page
-    router.push("/food-beverage");
+    router.push("/");
   };
 
   const handleCancelBack = () => {
@@ -321,7 +321,7 @@ export default function TrackingOrderPage() {
             </Typography>
           </div>
           <Divider sx={{ mb: 2, borderColor: "#E5E7EB" }} />
-          <div className="w-full flex justify-end pb-2">
+          <div className="w-full flex justify-end pb-4">
             <Typography
               variant="body1"
               sx={{
@@ -364,7 +364,7 @@ export default function TrackingOrderPage() {
       <Box sx={{ mb: 3, mt: 2 }}>
         <Button
           fullWidth
-          onClick={() => router.push("/food-beverage")}
+          onClick={() => setShowBackConfirm(true)}
           sx={{
             bgcolor: "transparent",
             color: "#4F3534",
