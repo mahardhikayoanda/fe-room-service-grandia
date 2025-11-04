@@ -17,7 +17,7 @@ export default function BackHeader({
   const route = useRouter();
 
   return (
-    <div className="bg-white flex gap-1 items-center">
+    <div className="bg-white flex gap-3 items-start">
       {!withoutBackButton && (
         <ArrowLeft
           size={24}

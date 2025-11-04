@@ -15,7 +15,7 @@ export default function ComplaintPage() {
   return (
     <section>
       <div className="bg-white">
-        <div className="bg-[#F2F2F2] w-[390px] h-[766px] flex flex-col gap-2">
+        <div className="bg-[#F2F2F2] w-[390px] flex flex-col gap-2">
           {/* Header */}
           <div className="flex flex-row bg-white px-6 py-4">
             <div className="gap-4">
@@ -27,7 +27,9 @@ export default function ComplaintPage() {
           {/* Complaint Info */}
           <div className="bg-white p-6 flex flex-col gap-4">
             <div>
-              <p className="text-black font-bold text-base">Complaint Information</p>
+              <p className="text-black font-bold text-base">
+                Complaint Information
+              </p>
               <p className="text-[#4C4C4C] text-sm">
                 Bayu Imam Fauzan | 0895632317128
               </p>
@@ -37,7 +39,12 @@ export default function ComplaintPage() {
             <div className="flex items-center justify-center">
               <div className="bg-[#F4F0F0] p-4 w-[342px] h-[74px] rounded-xl flex flex-row items-center gap-2">
                 <div className="p-2 bg-[#BE9E9D] rounded-full flex items-center justify-center w-10 h-10">
-                  <Image src="/icons/door-open.svg" alt="Door" width={24} height={24} />
+                  <Image
+                    src="/icons/door-open.svg"
+                    alt="Door"
+                    width={24}
+                    height={24}
+                  />
                 </div>
                 <div>
                   <p className="text-[#4F3534] font-bold">Room 120</p>
@@ -61,7 +68,9 @@ export default function ComplaintPage() {
 
             {/* Status */}
             <div>
-              <p className="text-black font-bold text-base mb-4">Complaint Status</p>
+              <p className="text-black font-bold text-base mb-4">
+                Complaint Status
+              </p>
               <ComplaintStatus />
             </div>
 
@@ -71,7 +80,12 @@ export default function ComplaintPage() {
               onClick={handleOpenDrawer}
             >
               <p>View Details</p>
-              <Image src="/icons/chevron-down.svg" alt="pict" width={16} height={16} />
+              <Image
+                src="/icons/chevron-down.svg"
+                alt="pict"
+                width={16}
+                height={16}
+              />
             </div>
           </div>
 
@@ -96,16 +110,20 @@ export default function ComplaintPage() {
           {/* Footer Button */}
           <div className="py-3 flex items-center justify-center">
             <Link
-              href="/" 
+              href="/"
               className="outline-1 outline-[#D8D8D8] px-9 py-3 w-[342px] h-12 flex items-center justify-center rounded-[24px] text-[#191919] font-bold"
-              >Return to the main menu
+            >
+              Return to the main menu
             </Link>
           </div>
         </div>
       </div>
 
       {/* Bottom Sheet Drawer */}
-      <ComplaintInformationDetails open={drawerOpen} onClose={handleCloseDrawer} />
+      <ComplaintInformationDetails
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </section>
   );
 }

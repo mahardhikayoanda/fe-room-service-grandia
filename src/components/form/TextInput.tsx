@@ -34,14 +34,14 @@ const TextInput = <T extends FieldValues>({
     ...(startIcon && {
       startAdornment: (
         <InputAdornment position="start">
-          <span className="text-gray-400">{startIcon}</span>
+          <span className="text-[#7F7F7F]">{startIcon}</span>
         </InputAdornment>
       ),
     }),
     ...(endIcon && {
       endAdornment: (
         <InputAdornment position="end">
-          <span className="text-gray-400">{endIcon}</span>
+          <span className="text-[#7F7F7F]">{endIcon}</span>
         </InputAdornment>
       ),
     }),
@@ -68,26 +68,48 @@ const TextInput = <T extends FieldValues>({
             "& .MuiOutlinedInput-root": {
               borderRadius: "12px",
               backgroundColor: "#FAFAFA",
+              fontSize: "14px",
               "& fieldset": {
-                borderColor: "#E5E7EB",
+                borderColor: "transparent",
               },
               "&:hover fieldset": {
-                borderColor: "#D1D5DB",
+                borderColor: "transparent",
               },
               "&.Mui-focused fieldset": {
                 borderColor: "#9CA3AF",
                 borderWidth: "1px",
               },
+              "&.Mui-error fieldset": {
+                borderColor: "#EF4444",
+              },
             },
             "& .MuiInputLabel-root": {
-              color: "#374151",
+              color: "#7F7F7F",
               fontWeight: 500,
+              fontSize: "14px",
               "&.Mui-focused": {
-                color: "#374151",
+                color: "#7F7F7F",
+              },
+              "&.Mui-error": {
+                color: "#EF4444",
               },
             },
             "& .MuiInputLabel-asterisk": {
               color: "#EF4444",
+            },
+            "& .MuiInputBase-input": {
+              color: "#191919",
+              "&::placeholder": {
+                color: "#B2B2B2",
+                opacity: 1,
+              },
+            },
+            "& .MuiFormHelperText-root": {
+              marginLeft: "12px",
+              fontSize: "12px",
+              "&.Mui-error": {
+                color: "#EF4444",
+              },
             },
           }}
           {...field}
@@ -106,26 +128,48 @@ const TextInput = <T extends FieldValues>({
         "& .MuiOutlinedInput-root": {
           borderRadius: "12px",
           backgroundColor: "#FAFAFA",
+          fontSize: "14px",
           "& fieldset": {
-            borderColor: "#E5E7EB",
+            borderColor: "transparent",
           },
           "&:hover fieldset": {
-            borderColor: "#D1D5DB",
+            borderColor: "transparent",
           },
           "&.Mui-focused fieldset": {
             borderColor: "#9CA3AF",
             borderWidth: "1px",
           },
+          "&.Mui-error fieldset": {
+            borderColor: "#EF4444",
+          },
         },
         "& .MuiInputLabel-root": {
-          color: "#374151",
+          color: "#7F7F7F",
           fontWeight: 500,
+          fontSize: "14px",
           "&.Mui-focused": {
-            color: "#374151",
+            color: "#7F7F7F",
+          },
+          "&.Mui-error": {
+            color: "#EF4444",
           },
         },
         "& .MuiInputLabel-asterisk": {
           color: "#EF4444",
+        },
+        "& .MuiInputBase-input": {
+          color: "#191919",
+          "&::placeholder": {
+            color: "#B2B2B2",
+            opacity: 1,
+          },
+        },
+        "& .MuiFormHelperText-root": {
+          marginLeft: "12px",
+          fontSize: "12px",
+          "&.Mui-error": {
+            color: "#EF4444",
+          },
         },
       }}
       {...props}
