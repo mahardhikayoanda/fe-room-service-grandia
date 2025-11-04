@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import DeliveryRoomInfo from "./_components/DeliveryRoomInfo";
 import OrderCard from "../_components/OrderCard";
 import OrderStatus from "./_components/OrderStatus";
+import BackNavigationConfirm from "./_components/BackNavigationConfirm";
 
 export default function TrackingOrderPage() {
   const isScrolled = useScrolled(5);
@@ -31,12 +32,41 @@ export default function TrackingOrderPage() {
   const [fullName, setFullName] = React.useState<string>("");
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const [showAll, setShowAll] = React.useState<boolean>(false);
+  const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
 
   // Calculate displayed menus
   const displayedMenus = showAll ? selectedMenus : selectedMenus.slice(0, 2);
   const hasMoreMenus = selectedMenus.length > 2;
 
+  // Prevent browser back button
+  React.useEffect(() => {
+    // Push a dummy state to prevent back
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = (event: PopStateEvent) => {
+      // Prevent the default back action
+      window.history.pushState(null, "", window.location.href);
+      // Show confirmation dialog
+      setShowBackConfirm(true);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   // Handlers
+  const handleConfirmBack = () => {
+    setShowBackConfirm(false);
+    // Navigate to food-beverage page
+    router.push("/food-beverage");
+  };
+
+  const handleCancelBack = () => {
+    setShowBackConfirm(false);
+  };
   const handleIncrement = (index: number) => {
     const currentQuantity = selectedMenus[index].quantity;
     dispatch(updateMenuQuantity({ index, quantity: currentQuantity + 1 }));
@@ -284,6 +314,13 @@ export default function TrackingOrderPage() {
           )}
         </div>
       </section>
+
+      {/* Back Navigation Confirmation */}
+      <BackNavigationConfirm
+        open={showBackConfirm}
+        onClose={handleCancelBack}
+        onConfirm={handleConfirmBack}
+      />
     </div>
   );
 }
