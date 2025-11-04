@@ -11,13 +11,21 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Building2, Percent, CreditCard, ChevronRight } from "lucide-react";
+import {
+  Building2,
+  Percent,
+  CreditCard,
+  ChevronRight,
+  Banknote,
+  HandCoins,
+} from "lucide-react";
 import React from "react";
 
 interface PaymentMethodModalProps {
   open: boolean;
   onClose: () => void;
-  onSelectPayment: (method: string) => void;
+  onSelectPaymentTitle: (methodTitle: string) => void;
+  onSelectPaymentId: (methodId: string) => void;
 }
 
 const paymentMethods = [
@@ -25,29 +33,37 @@ const paymentMethods = [
     id: "non-tunai",
     title: "Non Tunai",
     description: "Transfer through bank and e-wallet",
-    icon: Building2,
+    icon: CreditCard,
   },
   {
     id: "cod",
     title: "Pay on Delivery",
     description: "Pay upon order arrival",
-    icon: Percent,
+    icon: HandCoins,
   },
   {
     id: "checkout",
     title: "Pay at Checkout",
     description: "Pay at hotel checkout",
-    icon: CreditCard,
+    icon: Banknote,
   },
 ];
 
 export default function PaymentMethodModal({
   open,
   onClose,
-  onSelectPayment,
+  onSelectPaymentTitle,
+  onSelectPaymentId,
 }: PaymentMethodModalProps) {
-  const handleSelectMethod = (methodId: string) => {
-    onSelectPayment(methodId);
+  const handleSelectMethod = ({
+    methodTitle,
+    methodId,
+  }: {
+    methodTitle: string;
+    methodId: string;
+  }) => {
+    onSelectPaymentTitle(methodTitle);
+    onSelectPaymentId(methodId);
     onClose();
   };
 
@@ -97,7 +113,12 @@ export default function PaymentMethodModal({
                   }}
                 >
                   <ListItemButton
-                    onClick={() => handleSelectMethod(method.title)}
+                    onClick={() =>
+                      handleSelectMethod({
+                        methodTitle: method.title,
+                        methodId: method.id,
+                      })
+                    }
                     sx={{
                       py: 1,
                       px: 0,

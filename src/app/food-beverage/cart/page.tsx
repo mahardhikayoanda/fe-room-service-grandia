@@ -11,11 +11,13 @@ import { useAppDispatch, useAppSelector } from "@/libs/hooks/useRedux";
 import {
   selectSelectedMenus,
   selectCartItemCount,
+  selectCartTotalPrice,
   updateMenuQuantity,
 } from "@/libs/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import PaymentSummary from "./_components/PaymentSummary";
 import CheckoutButton from "./_components/CheckoutButton";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ChartPage() {
   const isScrolled = useScrolled(5);
@@ -25,10 +27,16 @@ export default function ChartPage() {
   // Redux state
   const selectedMenus = useAppSelector(selectSelectedMenus);
   const cartItemCount = useAppSelector(selectCartItemCount);
+  const totalPrice = useAppSelector(selectCartTotalPrice);
 
   // Local state
   const [fullName, setFullName] = React.useState<string>("");
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
+  const [showAll, setShowAll] = React.useState<boolean>(false);
+
+  // Calculate displayed menus
+  const displayedMenus = showAll ? selectedMenus : selectedMenus.slice(0, 2);
+  const hasMoreMenus = selectedMenus.length > 2;
 
   // Handlers
   const handleIncrement = (index: number) => {
@@ -44,7 +52,6 @@ export default function ChartPage() {
   };
 
   const handleEdit = (index: number) => {
-    // TODO: Navigate to edit page or open modal
     console.log("Edit menu at index:", index);
   };
 
@@ -113,7 +120,7 @@ export default function ChartPage() {
           </Box>
 
           {/* Order Cards */}
-          <Box sx={{ display: "flex", flexDirection: "column", mb: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
             {selectedMenus.length === 0 ? (
               <Box
                 sx={{
@@ -125,42 +132,123 @@ export default function ChartPage() {
                 <Typography>Belum ada pesanan</Typography>
               </Box>
             ) : (
-              selectedMenus.map((menu, index) => {
-                const isLastItem = index === selectedMenus.length - 1;
+              <AnimatePresence mode="sync">
+                {displayedMenus.map((menu, index) => {
+                  const isLastItem = index === selectedMenus.length - 1;
+                  const originalIndex = selectedMenus.findIndex(
+                    (m) => m.uuid === menu.uuid
+                  );
 
-                return (
-                  <React.Fragment key={`${menu.uuid}-${index}`}>
-                    <OrderCard
-                      title={menu.name}
-                      image={menu.image}
-                      modifierChoices={menu.modifiers}
-                      notes={menu.notes}
-                      price={menu.basePrice}
-                      quantity={menu.quantity}
-                      onEdit={() => handleEdit(index)}
-                      onIncrement={() => handleIncrement(index)}
-                      onDecrement={() => handleDecrement(index)}
-                    />
-                    {!isLastItem && (
-                      <Divider sx={{ my: 2, borderColor: "#E5E7EB" }} />
-                    )}
-                  </React.Fragment>
-                );
-              })
+                  return (
+                    <motion.div
+                      key={`${menu.uuid}-${index}`}
+                      initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        marginBottom: 0,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        marginBottom: 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: "easeInOut",
+                        opacity: { duration: 0.2 },
+                      }}
+                      style={{ overflow: "hidden" }}
+                    >
+                      <OrderCard
+                        title={menu.name}
+                        image={menu.image}
+                        modifierChoices={menu.modifiers}
+                        notes={menu.notes}
+                        price={menu.basePrice}
+                        quantity={menu.quantity}
+                        onEdit={() => handleEdit(originalIndex)}
+                        onIncrement={() => handleIncrement(originalIndex)}
+                        onDecrement={() => handleDecrement(originalIndex)}
+                      />
+                      {!isLastItem && (
+                        <Divider
+                          sx={{ mt: 2, mb: 2, borderColor: "#E5E7EB" }}
+                        />
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             )}
           </Box>
+
+          {/* Show More Button */}
+          {hasMoreMenus && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mb: 1.5,
+                mt: -3,
+              }}
+            >
+              <Button
+                onClick={() => setShowAll(!showAll)}
+                endIcon={
+                  <Box
+                    component="span"
+                    sx={{
+                      transform: showAll ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 6L8 10L12 6"
+                        stroke="#1976d2"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Box>
+                }
+                sx={{
+                  textTransform: "none",
+                  color: "#1976d2",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  "&:hover": {
+                    bgcolor: "transparent",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {showAll ? "Show less" : "Show more"}
+              </Button>
+            </Box>
+          )}
         </div>
       </section>
 
       {/* payment summary */}
       <section className="flex flex-col items-center justify-center bg-white mt-1 px-6">
-        <PaymentSummary totalItems={cartItemCount} subtotal={9999} tax={2000} />
+        <PaymentSummary totalItems={cartItemCount} subtotal={totalPrice} />
       </section>
 
       {/* button payment */}
-      {/* <section className="sticky bottom-0 flex justify-center mt-1"> */}
-      <CheckoutButton />
-      {/* </section> */}
+      <section className="mt-1">
+        <CheckoutButton />
+      </section>
     </div>
   );
 }

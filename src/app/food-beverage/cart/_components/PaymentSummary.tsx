@@ -5,19 +5,15 @@ import { Box, Typography, Divider } from "@mui/material";
 interface PaymentSummaryProps {
   totalItems: number;
   subtotal: number;
-  tax?: number;
-  serviceCharge?: number;
   discount?: number;
 }
 
 export default function PaymentSummary({
   totalItems,
   subtotal,
-  tax = 0,
-  serviceCharge = 0,
   discount = 0,
 }: PaymentSummaryProps) {
-  const totalPayment = subtotal + tax + serviceCharge - discount;
+  const totalPayment = subtotal - discount;
 
   const formatPrice = (price: number) => {
     return `Rp${price.toLocaleString("id-ID")}`;
@@ -91,62 +87,6 @@ export default function PaymentSummary({
             {formatPrice(subtotal)}
           </Typography>
         </Box>
-
-        {/* Optional: Tax */}
-        {tax > 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-              }}
-            >
-              Tax
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-              }}
-            >
-              {formatPrice(tax)}
-            </Typography>
-          </Box>
-        )}
-
-        {/* Optional: Service Charge */}
-        {serviceCharge > 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-              }}
-            >
-              Service Charge
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                color: "#666",
-              }}
-            >
-              {formatPrice(serviceCharge)}
-            </Typography>
-          </Box>
-        )}
 
         {/* Optional: Discount */}
         {discount > 0 && (

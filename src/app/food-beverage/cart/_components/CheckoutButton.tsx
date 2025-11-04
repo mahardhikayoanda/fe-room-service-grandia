@@ -18,6 +18,7 @@ export default function CheckoutButton() {
 
   const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentMethodId, setPaymentMethodId] = useState("");
 
   // Don't show the button if cart is empty
   if (totalItems === 0) {
@@ -25,8 +26,19 @@ export default function CheckoutButton() {
   }
 
   const handleCheckout = () => {
-    // TODO: Implement checkout logic
-    console.log("Checkout clicked");
+    switch (paymentMethodId) {
+      case "non-tunai":
+        console.log("open midtrans gateway");
+        break;
+      case "cod":
+        router.push("/food-beverage/cart/tracking-order");
+        break;
+      case "checkout":
+        router.push("/food-beverage/cart/tracking-order");
+        break;
+      default:
+        console.log("No payment method selected");
+    }
   };
 
   const handlePaymentOptions = () => {
@@ -39,8 +51,6 @@ export default function CheckoutButton() {
       <Box
         sx={{
           bgcolor: "white",
-          mt: 4,
-          // max-w-sm in Tailwind = 384px
           maxWidth: 384,
           mx: "auto",
         }}
@@ -125,7 +135,7 @@ export default function CheckoutButton() {
               textTransform: "none",
               mb: 1,
               "&:hover": {
-                bgcolor: "#C4B4B4",
+                bgcolor: "#4F3534",
               },
               "&:disabled": {
                 bgcolor: "#E8E8E8",
@@ -141,9 +151,11 @@ export default function CheckoutButton() {
       <PaymentMethodModal
         open={openPaymentMethod}
         onClose={() => setOpenPaymentMethod(false)}
-        onSelectPayment={(method) => {
-          console.log("Selected payment method:", method);
+        onSelectPaymentTitle={(method) => {
           setPaymentMethod(method);
+        }}
+        onSelectPaymentId={(methodId) => {
+          setPaymentMethodId(methodId);
         }}
       />
     </>
