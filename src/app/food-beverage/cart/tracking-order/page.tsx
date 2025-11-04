@@ -361,7 +361,7 @@ export default function TrackingOrderPage() {
       </section>
 
       {/* Return to Main Menu Button */}
-      <Box sx={{ mb: 3, mt: 2 }}>
+      <Box sx={{ mb: 3, mt: 2, px: 2 }}>
         <Button
           fullWidth
           onClick={() => setShowBackConfirm(true)}

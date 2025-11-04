@@ -111,11 +111,11 @@ export default function OrderStatus({
             {getIcon(item.icon, item.isCompleted)}
 
             {/* Vertical Line */}
-            {!isLast && showConnector && (
+            {!isLast && (
               <Box
                 sx={{
-                  width: 2,
-                  height: 40,
+                  width: 1.5,
+                  height: 24,
                   bgcolor: "#D8D8D8",
                   my: 0.5,
                 }}

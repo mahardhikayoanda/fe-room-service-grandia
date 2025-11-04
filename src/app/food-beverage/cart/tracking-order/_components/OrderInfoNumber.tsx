@@ -111,7 +111,7 @@ export default function OrderInfoNumber({
               color: "#7F7F7F",
             }}
           >
-            {paymentMethod}
+            Order time
           </Typography>
         </Box>
 
@@ -126,7 +126,7 @@ export default function OrderInfoNumber({
               textAlign: "right",
             }}
           >
-            Order Time
+            {paymentMethod}
           </Typography>
           <Typography
             sx={{
