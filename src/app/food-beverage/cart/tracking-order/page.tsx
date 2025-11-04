@@ -3,20 +3,20 @@
 import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
 import React from "react";
-import { Box, Button, Typography, Divider } from "@mui/material";
+import { Box, Button, Typography, Divider, Grid } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/libs/hooks/useRedux";
 import {
   selectSelectedMenus,
   selectCartItemCount,
   selectCartTotalPrice,
-  updateMenuQuantity,
 } from "@/libs/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import DeliveryRoomInfo from "./_components/DeliveryRoomInfo";
-import OrderCard from "../_components/OrderCard";
 import OrderStatus from "./_components/OrderStatus";
 import BackNavigationConfirm from "./_components/BackNavigationConfirm";
+import OrderCard from "./_components/OrderCard";
+import OrderInfoNumber from "./_components/OrderInfoNumber";
 
 export default function TrackingOrderPage() {
   const isScrolled = useScrolled(5);
@@ -29,8 +29,6 @@ export default function TrackingOrderPage() {
   const totalPrice = useAppSelector(selectCartTotalPrice);
 
   // Local state
-  const [fullName, setFullName] = React.useState<string>("");
-  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
 
@@ -66,25 +64,6 @@ export default function TrackingOrderPage() {
 
   const handleCancelBack = () => {
     setShowBackConfirm(false);
-  };
-  const handleIncrement = (index: number) => {
-    const currentQuantity = selectedMenus[index].quantity;
-    dispatch(updateMenuQuantity({ index, quantity: currentQuantity + 1 }));
-  };
-
-  const handleDecrement = (index: number) => {
-    const currentQuantity = selectedMenus[index].quantity;
-    if (currentQuantity > 1) {
-      dispatch(updateMenuQuantity({ index, quantity: currentQuantity - 1 }));
-    }
-  };
-
-  const handleEdit = (index: number) => {
-    console.log("Edit menu at index:", index);
-  };
-
-  const handleAddMoreOrder = () => {
-    router.push("/food-beverage");
   };
 
   return (
@@ -164,34 +143,19 @@ export default function TrackingOrderPage() {
       <section className="flex flex-col items-center justify-center bg-white mt-1">
         <div className="w-full px-6">
           <Box sx={{ mb: 2, mt: 2, width: "100%" }}>
-            <div className="flex justify-between items-center">
-              <Typography
-                variant="h1"
-                sx={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  color: "#000",
-                }}
-              >
-                Your Order |{" "}
-                <Typography component="span" sx={{ fontWeight: 100 }}>
-                  {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
-                </Typography>
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: "16px",
+                fontWeight: 700,
+                color: "#000",
+              }}
+            >
+              Your Order |{" "}
+              <Typography component="span" sx={{ fontWeight: 100 }}>
+                {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
               </Typography>
-              <Button
-                variant="text"
-                onClick={handleAddMoreOrder}
-                sx={{
-                  p: 0,
-                  cursor: "pointer",
-                  textTransform: "none",
-                  px: 0.5,
-                  py: 0,
-                }}
-              >
-                Tambah Pesanan
-              </Button>
-            </div>
+            </Typography>
           </Box>
 
           {/* Order Cards */}
@@ -242,9 +206,6 @@ export default function TrackingOrderPage() {
                         notes={menu.notes}
                         price={menu.basePrice}
                         quantity={menu.quantity}
-                        onEdit={() => handleEdit(originalIndex)}
-                        onIncrement={() => handleIncrement(originalIndex)}
-                        onDecrement={() => handleDecrement(originalIndex)}
                       />
                       {!isLastItem && (
                         <Divider
@@ -312,8 +273,116 @@ export default function TrackingOrderPage() {
               </Button>
             </Box>
           )}
+
+          {/* Summary Payment*/}
+          <Divider sx={{ mb: 2, borderColor: "#E5E7EB" }} />
+          <div className="flex justify-between items-center text-[#7F7F7F]">
+            <Typography
+              sx={{
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#7F7F7F",
+                mb: 0.5,
+              }}
+            >
+              Total order amount
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#7F7F7F",
+                mb: 0.5,
+              }}
+            >
+              {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
+            </Typography>
+          </div>
+          <div className="flex justify-between items-center text-[#7F7F7F]">
+            <Typography
+              sx={{
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#7F7F7F",
+                mb: 0.5,
+              }}
+            >
+              Price
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#7F7F7F",
+                mb: 0.5,
+              }}
+            >
+              Rp{totalPrice.toFixed(2)}
+            </Typography>
+          </div>
+          <Divider sx={{ mb: 2, borderColor: "#E5E7EB" }} />
+          <div className="w-full flex justify-end pb-2">
+            <Typography
+              variant="body1"
+              sx={{
+                mr: 1,
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#191919",
+                mb: 0.5,
+              }}
+            >
+              Total Order:
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: "14px",
+                fontWeight: 700,
+                color: "#191919",
+                mb: 0.5,
+              }}
+            >
+              Rp{totalPrice.toFixed(2)}
+            </Typography>
+          </div>
         </div>
       </section>
+
+      {/* Order Info Number */}
+      <section className="flex flex-col items-center justify-center bg-white mt-1">
+        <div className="w-full px-6">
+          <OrderInfoNumber
+            orderNumber="25012421320"
+            paymentMethod="BCA virtual account"
+            orderTime="07-08-2025 09:10"
+          />
+        </div>
+      </section>
+
+      {/* Return to Main Menu Button */}
+      <Box sx={{ mb: 3, mt: 2 }}>
+        <Button
+          fullWidth
+          onClick={() => router.push("/food-beverage")}
+          sx={{
+            bgcolor: "transparent",
+            color: "#4F3534",
+            py: 1,
+            borderRadius: 8,
+            fontSize: "16px",
+            fontWeight: 600,
+            textTransform: "none",
+            border: "1px solid #4F3534",
+            "&:hover": {
+              bgcolor: "#F9FAFB",
+              borderColor: "#D1D5DB",
+            },
+          }}
+        >
+          Return to the main menu
+        </Button>
+      </Box>
 
       {/* Back Navigation Confirmation */}
       <BackNavigationConfirm

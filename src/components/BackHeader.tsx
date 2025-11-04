@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Subtitles } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import React from "react";
 
@@ -36,16 +36,18 @@ export default function BackHeader({
         >
           {title || "Unknown Title"}
         </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            fontWeight: "400",
-            fontSize: "14px",
-            color: "text.primary",
-          }}
-        >
-          {subTitle || "Unknown Subtitle"}
-        </Typography>
+        {subTitle && (
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: "400",
+              fontSize: "14px",
+              color: "text.primary",
+            }}
+          >
+            {subTitle}
+          </Typography>
+        )}
       </div>
     </div>
   );
