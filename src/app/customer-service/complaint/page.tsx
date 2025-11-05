@@ -1,129 +1,182 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import ComplaintStatus from "@/app/customer-service/_components/ComplaintStatus";
-import ComplaintInformationDetails from "@/app/_components/ComplaintInformationDetails";
+import BackHeader from "@/components/BackHeader";
+import { useScrolled } from "@/libs/hooks/useScrolled";
+import { useRouter } from "nextjs-toploader/app";
+import React from "react";
+import ComplaintRequestRoomInfo from "./_components/ComplaintRequestRoomInfo";
+import ComplaintRequestStatus from "./_components/ComplaintRequestStatus";
+import ComplaintRequestMainInfo from "./_components/ComplaintRequestMainInfo";
+import { Box, Button, Divider } from "@mui/material";
+import ComplaintRequestNumber from "./_components/ComplaintRequestNumber";
+import BackNavigationConfirm from "@/app/food-beverage/cart/tracking-order/_components/BackNavigationConfirm";
 
-export default function ComplaintPage() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+export default function TrackingComplaintRequestPage() {
+  const isScrolled = useScrolled(5);
+  const router = useRouter();
 
-  const handleOpenDrawer = () => setDrawerOpen(true);
-  const handleCloseDrawer = () => setDrawerOpen(false);
+  // Local state
+  const [showAll, setShowAll] = React.useState<boolean>(false);
+  const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
+
+  // Prevent browser back button
+  React.useEffect(() => {
+    // Push a dummy state to prevent back
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = (event: PopStateEvent) => {
+      // Prevent the default back action
+      window.history.pushState(null, "", window.location.href);
+      // Show confirmation dialog
+      setShowBackConfirm(true);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  // Handlers
+  const handleConfirmBack = () => {
+    setShowBackConfirm(false);
+    // Navigate to food-beverage page
+    router.push("/");
+  };
+
+  const handleCancelBack = () => {
+    setShowBackConfirm(false);
+  };
 
   return (
-    <section>
-      <div className="bg-white">
-        <div className="bg-[#F2F2F2] w-[390px] flex flex-col gap-2">
-          {/* Header */}
-          <div className="flex flex-row bg-white px-6 py-4">
-            <div className="gap-4">
-              <p className="font-bold text-[#191919] text-lg">Complaint</p>
-              <p className="text-[#191919] text-sm">#25012421320</p>
-            </div>
-          </div>
-
-          {/* Complaint Info */}
-          <div className="bg-white p-6 flex flex-col gap-4">
-            <div>
-              <p className="text-black font-bold text-base">
-                Complaint Information
-              </p>
-              <p className="text-[#4C4C4C] text-sm">
-                Bayu Imam Fauzan | 0895632317128
-              </p>
-            </div>
-
-            {/* Room Info */}
-            <div className="flex items-center justify-center">
-              <div className="bg-[#F4F0F0] p-4 w-[342px] h-[74px] rounded-xl flex flex-row items-center gap-2">
-                <div className="p-2 bg-[#BE9E9D] rounded-full flex items-center justify-center w-10 h-10">
-                  <Image
-                    src="/icons/door-open.svg"
-                    alt="Door"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div>
-                  <p className="text-[#4F3534] font-bold">Room 120</p>
-                  <p className="text-[#4C4C4C]">Deluxe Suite - 3rd floor</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Complaint Text */}
-            <div className="flex flex-row gap-4 pb-4 border-b border-[#D8D8D8]">
-              <Image
-                src="/images/customer_service/pict-cs.png"
-                alt="pict"
-                width={80}
-                height={80}
-              />
-              <p className="text-[#4C4C4C] text-sm">
-                Air di kamar mandi warnanya hijau dan sangat kotor
-              </p>
-            </div>
-
-            {/* Status */}
-            <div>
-              <p className="text-black font-bold text-base mb-4">
-                Complaint Status
-              </p>
-              <ComplaintStatus />
-            </div>
-
-            {/* View Details */}
-            <div
-              className="flex flex-row justify-end items-center text-sm font-bold text-[#0F67B9] cursor-pointer"
-              onClick={handleOpenDrawer}
-            >
-              <p>View Details</p>
-              <Image
-                src="/icons/chevron-down.svg"
-                alt="pict"
-                width={16}
-                height={16}
-              />
-            </div>
-          </div>
-
-          {/* Complaint Meta */}
-          <div className="bg-white py-4 px-6">
-            <div className="flex flex-row justify-between">
-              <p className="text-black font-bold text-sm">No. Complaint</p>
-              <div className="flex flex-row gap-1 items-center">
-                <p className="text-black text-sm">25012421320</p>
-                <div className="outline-1 outline-[#D8D8D8] px-2 py-0.5 rounded">
-                  <p className="text-[#7F7F7F] font-bold text-sm">Copy</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-row justify-between mt-[8px]">
-              <p className="text-[#7F7F7F] text-sm">Complaint time</p>
-              <p className="text-[#7F7F7F] text-sm">07-08-2025 09:10</p>
-            </div>
-          </div>
-
-          {/* Footer Button */}
-          <div className="py-3 flex items-center justify-center">
-            <Link
-              href="/"
-              className="outline-1 outline-[#D8D8D8] px-9 py-3 w-[342px] h-12 flex items-center justify-center rounded-[24px] text-[#191919] font-bold"
-            >
-              Return to the main menu
-            </Link>
-          </div>
-        </div>
+    <div className="w-full min-h-screen relative min-w-sm">
+      {/* Header */}
+      <div
+        className={`sticky top-0 z-10 flex flex-col gap-3 bg-white px-6 pt-4 pb-4 transition-shadow duration-150 ease-in-out ${isScrolled ? "shadow-md" : "shadow-none"}`}
+      >
+        <BackHeader
+          title="Complaint/Request Submitted"
+          subTitle="#25012421320"
+          withoutBackButton
+        />
       </div>
 
-      {/* Bottom Sheet Drawer */}
-      <ComplaintInformationDetails
-        open={drawerOpen}
-        onClose={handleCloseDrawer}
+      {/* Content */}
+      <section className="flex flex-col items-center justify-center bg-white mt-1">
+        <div className="w-full px-6">
+          {/* Complaint Room Info */}
+          <ComplaintRequestRoomInfo
+            roomNumber={"120"}
+            roomType={"Deluxe Suite"}
+            floor={"3rd floor"}
+          />
+
+          {/* Complaint Information */}
+          <ComplaintRequestMainInfo
+            remark={
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+            imageList={[
+              {
+                uuid: "1",
+                src: "/images/customer_service/pict-cs.png",
+              },
+              {
+                uuid: "2",
+                src: "/images/customer_service/pict-cs.png",
+              },
+              {
+                uuid: "3",
+                src: "/images/customer_service/pict-cs.png",
+              },
+            ]}
+          />
+
+          <Divider
+            sx={{
+              my: 2,
+              borderColor: "#E0E0E0",
+            }}
+          />
+
+          {/* Complaint Request Status */}
+          <ComplaintRequestStatus
+            statusItems={[
+              {
+                id: "1",
+                title: "Order Received",
+                timestamp: "07-07-2025 09:15",
+                isCompleted: true,
+                icon: "order_received",
+              },
+              {
+                id: "2",
+                title: "Message Read",
+                timestamp: "07-07-2025 09:10",
+                isCompleted: true,
+                icon: "message_read",
+              },
+              {
+                id: "3",
+                title: "Processed",
+                timestamp: "07-07-2025 09:15",
+                isCompleted: false,
+                icon: "processed",
+              },
+              {
+                id: "4",
+                title: "Finished",
+                timestamp: "07-07-2025 09:15",
+                isCompleted: false,
+                icon: "finished",
+              },
+            ]}
+            estimatedDelivery="10:58 PM"
+          />
+        </div>
+      </section>
+
+      <section className="flex flex-col items-center justify-center bg-white mt-1">
+        <div className="w-full px-6">
+          {/* Complaint Request Number */}
+          <ComplaintRequestNumber
+            ComplaintRequestNumber="#25012421320"
+            orderTime="07-07-2025 09:15"
+          />
+        </div>
+      </section>
+
+      {/* Return to Main Menu Button */}
+      <Box sx={{ mb: 3, mt: 2, px: 2 }}>
+        <Button
+          fullWidth
+          onClick={() => setShowBackConfirm(true)}
+          sx={{
+            bgcolor: "transparent",
+            color: "#4F3534",
+            py: 1,
+            borderRadius: 8,
+            fontSize: "16px",
+            fontWeight: 600,
+            textTransform: "none",
+            border: "1px solid #4F3534",
+            "&:hover": {
+              bgcolor: "#F9FAFB",
+              borderColor: "#D1D5DB",
+            },
+          }}
+        >
+          Return to the main menu
+        </Button>
+      </Box>
+
+      {/* Back Navigation Confirmation */}
+      <BackNavigationConfirm
+        open={showBackConfirm}
+        onClose={handleCancelBack}
+        onConfirm={handleConfirmBack}
       />
-    </section>
+    </div>
   );
 }
