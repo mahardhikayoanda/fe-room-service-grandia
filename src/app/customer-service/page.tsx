@@ -64,7 +64,7 @@ export default function CustomerServicePage() {
 
       {/* Form Container */}
       <Box
-        component="form"
+        // component="form"
         onSubmit={handleSubmit((d) => onSubmit(d))}
         sx={{
           bgcolor: "white",
@@ -152,11 +152,11 @@ export default function CustomerServicePage() {
         }}
       >
         <Button
-          type="submit"
+          // type="submit"
           onClick={handleSubmit(onSubmit)}
           disabled={!isValid}
-          component={isValid ? Link : "button"}
-          href={isValid ? "/customer-service/complaint" : undefined}
+          // component={isValid ? Link : "button"}
+          // href={isValid ? "/customer-service/complaint" : undefined}
           sx={{
             width: "100%",
             maxWidth: 342,
