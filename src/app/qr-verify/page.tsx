@@ -77,7 +77,7 @@ export default function QRVerifyPage() {
         setState({
           step: "error",
           message: "Location Verification Failed",
-          error: `You must be within ${MAX_DISTANCE_KM} meters radius of Hotel Grandia to access this service. Please make sure you are at the hotel premises.`,
+          error: `You must be within ${MAX_DISTANCE_KM} kilometers radius of Hotel Grandia to access this service. Please make sure you are at the hotel premises.`,
           errorType: "location_failed",
         });
         return;
@@ -149,21 +149,39 @@ export default function QRVerifyPage() {
       console.error("Verification error:", error);
 
       let errorMessage = "Unable to verify your location.";
+      let errorDetails = "";
 
       if (error.code === 1) {
         errorMessage =
           "Location permission denied. Please enable location access in your browser settings to use this service.";
+        errorDetails =
+          "Go to your browser settings → Site permissions → Location → Allow";
       } else if (error.code === 2) {
         errorMessage =
           "Unable to determine your location. Please check your device's location settings.";
+        errorDetails = "Make sure GPS is enabled on your device";
       } else if (error.code === 3) {
         errorMessage = "Location request timed out. Please try again.";
+        errorDetails = "This might happen if GPS signal is weak";
+      } else if (error.message?.includes("secure")) {
+        errorMessage =
+          "Geolocation requires HTTPS connection. This page must be accessed via HTTPS.";
+        errorDetails = "Current protocol: " + window.location.protocol;
       }
+
+      // Log detailed error for debugging
+      console.log("=== GEOLOCATION ERROR DEBUG ===");
+      console.log("Error Code:", error.code);
+      console.log("Error Message:", error.message);
+      console.log("Protocol:", window.location.protocol);
+      console.log("Is HTTPS:", window.location.protocol === "https:");
+      console.log("User Agent:", navigator.userAgent);
+      console.log("==============================");
 
       setState({
         step: "error",
         message: "Verification Failed",
-        error: errorMessage,
+        error: `${errorMessage}${errorDetails ? `\n\n${errorDetails}` : ""}`,
         errorType: "general",
       });
     }
@@ -327,6 +345,7 @@ export default function QRVerifyPage() {
                 fontSize: "14px",
                 color: "#EF4444",
                 mb: 1,
+                whiteSpace: "pre-line",
               }}
             >
               {state.error}
@@ -341,6 +360,39 @@ export default function QRVerifyPage() {
             >
               Silakan hubungi front desk untuk bantuan lebih lanjut.
             </Typography>
+
+            {/* Additional help for HTTPS issue */}
+            {state.error?.includes("HTTPS") && (
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2,
+                  bgcolor: "#FFF4ED",
+                  borderRadius: 2,
+                  border: "1px solid #FED7AA",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    color: "#9A3412",
+                    fontWeight: 600,
+                    mb: 1,
+                  }}
+                >
+                  ⚠️ Secure Connection Required
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "11px",
+                    color: "#9A3412",
+                  }}
+                >
+                  Location access requires a secure HTTPS connection. Please
+                  make sure you're accessing this page via HTTPS.
+                </Typography>
+              </Box>
+            )}
 
             <Button
               onClick={
@@ -404,8 +456,8 @@ export default function QRVerifyPage() {
             }}
           >
             For security purposes, you must scan the QR code from your hotel
-            room and be within {MAX_DISTANCE_KM} meters of Hotel Grandia to
-            access room service.
+            room and be within close proximity of Hotel Grandia to access room
+            service.
           </Typography>
         </Box>
       </Box>

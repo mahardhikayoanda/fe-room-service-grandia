@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Divider } from "@mui/material";
 import { User, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
   defaultCustomerServiceForm,
 } from "./_utils/customer-service-schema";
 import { maxFileSize } from "@/constants";
+import { useRoom } from "@/providers/RoomProvider";
 
 export default function CustomerServicePage() {
   const router = useRouter();
@@ -39,9 +40,9 @@ export default function CustomerServicePage() {
     reValidateMode: "onChange",
   });
 
-  const onSubmit = (data: CustomerServiceFormType) => {
-    console.log("Form submitted:", data);
+  const { roomData, roomUUID } = useRoom();
 
+  const onSubmit = (data: CustomerServiceFormType) => {
     mutate(data, {
       onSuccess: () => {
         reset();
@@ -49,6 +50,12 @@ export default function CustomerServicePage() {
       },
     });
   };
+
+  useEffect(() => {
+    if (roomUUID) {
+      setValue("room_uuid", roomUUID);
+    }
+  }, [roomUUID, setValue]);
 
   return (
     <div className="w-full min-h-screen relative min-w-sm">

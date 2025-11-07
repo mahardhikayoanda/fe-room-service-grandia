@@ -17,12 +17,34 @@ const parseObjectRequest = async (obj: MyObject): Promise<MyObject> => {
       if (value instanceof File) {
         // If the value is a File, store only its name in the result object
         result[key] = await uploadFile(value);
+      } else if (value instanceof FileList) {
+        // If the value is a FileList, convert to array and upload each file
+        const filesArray = Array.from(value);
+        const uploadedUuids = await Promise.all(
+          filesArray.map((file) => uploadFile(file))
+        );
+
+        // Format as array of objects with photo_uuid key for complaint_and_request_images
+        if (key === "complaint_and_request_images") {
+          result[key] = uploadedUuids.map((uuid) => ({ photo_uuid: uuid }));
+        } else {
+          result[key] = uploadedUuids;
+        }
       } else if (
         Array.isArray(value) &&
         value.every((item) => item instanceof File)
       ) {
         // If the value is an array of Files, store an array of file names in the result object
-        result[key] = await Promise.all(value.map((file) => uploadFile(file)));
+        const uploadedUuids = await Promise.all(
+          value.map((file) => uploadFile(file))
+        );
+
+        // Format as array of objects with photo_uuid key for complaint_and_request_images
+        if (key === "complaint_and_request_images") {
+          result[key] = uploadedUuids.map((uuid) => ({ photo_uuid: uuid }));
+        } else {
+          result[key] = uploadedUuids;
+        }
       } else if (
         typeof value === "object" &&
         value !== null &&
