@@ -4,6 +4,7 @@ import { deleteCookie, getCookie } from "cookies-next/client";
 
 import { getQueryCLient } from "../providers";
 import { apiVersion, baseURL, xClientVersion } from "@/constants";
+import { getQRString } from "@/utils/geolocation";
 
 interface ResponseWrapper<T> {
   data: T;
@@ -35,6 +36,7 @@ const fetchHelper = async <T>(
       headers: {
         Authorization: `Bearer ${getCookie("token") || ""}`,
         "x-client-version": xClientVersion,
+        "room-qr-string": getQRString() || "",
         ...headerInit,
       },
     });

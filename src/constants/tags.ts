@@ -1,7 +1,6 @@
 const TAGS = {
   // auth
-  AUTH: "auth",
-  USER: "user",
+  ROOM_QR: "room_qr",
 
   // promo voucher
   PROMO: "promo",

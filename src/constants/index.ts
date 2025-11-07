@@ -5,4 +5,8 @@ export const maxFileSize = Number(
   process.env.NEXT_PUBLIC_MAX_FILE_UPLOAD_SIZE || 2
 );
 
+export const radius = Number(process.env.NEXT_PUBLIC_RADIUS);
+export const latitude = Number(process.env.NEXT_PUBLIC_LATITUDE);
+export const longitude = Number(process.env.NEXT_PUBLIC_LONGITUDE);
+
 export const metadataBaseURL = "";

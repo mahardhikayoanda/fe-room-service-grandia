@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import { Home } from "lucide-react";
 import { useState } from "react";
+import { useRoom } from "@/providers/RoomProvider";
 
 export default function RoomInformation() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { roomData, roomUUID } = useRoom();
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -83,7 +85,7 @@ export default function RoomInformation() {
               fontWeight="bold"
               className="text-primary"
             >
-              Room 120
+              Room {roomData?.room_number || "-"}
             </Typography>
 
             <Typography
@@ -91,7 +93,8 @@ export default function RoomInformation() {
               fontWeight="semibold"
               className="text-custom-gray-500"
             >
-              Deluxe Suite - 3rd floor
+              {roomData?.room_type?.name || "Loading..."} -{" "}
+              {roomData?.location || ""}
             </Typography>
           </div>
         </div>

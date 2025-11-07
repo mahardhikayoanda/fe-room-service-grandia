@@ -3,39 +3,23 @@ import { type NextRequest, NextResponse } from "next/server";
 // eslint-disable-next-line consistent-return
 export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
-  //   const token = request.cookies.get("token")?.value;
 
+  // Skip middleware for static files
   if (/\.(png|svg|jpeg|jpg|mp3|xlsx)$/.test(pathname)) {
     return NextResponse.next();
   }
 
-  //   if (token && (pathname === "/login" || pathname === "/register")) {
-  //     return NextResponse.redirect(new URL("/", request.url));
-  //   }
+  // Allow access to QR verification page without restrictions
+  if (pathname === "/qr-verify") {
+    return NextResponse.next();
+  }
 
-  // if (
-  //   pathname.startsWith("/profile") &&
-  //   !pathname.startsWith("/profile/your-order") &&
-  //   !token
-  // ) {
-  //   return NextResponse.redirect(
-  //     new URL(`/login?fallback=${pathname}`, request.url)
-  //   );
-  // }
-
-  // if (
-  //   !token &&
-  //   pathname.startsWith("/profile") &&
-  //   !pathname.startsWith("/profile/your-order") &&
-  //   pathname !== "/login" &&
-  //   pathname !== "/register"
-  // ) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  // Check if QR is verified (this will be checked on client-side)
+  // Middleware can't access sessionStorage, so we'll handle this via client-side routing
 
   return NextResponse.next();
 };
 
 export const config = {
-  matcher: ["/login", "/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/qr-verify", "/((?!_next/static|_next/image|favicon.ico).*)"],
 };

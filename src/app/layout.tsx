@@ -7,6 +7,8 @@ import { Suspense } from "react";
 import ToastWrapper from "@/components/ToastWrapper";
 import Providers from "./providers";
 import ThemeProvider from "./ThemeProvider";
+import { QRVerificationProvider } from "@/providers/QRVerificationProvider";
+import { RoomProvider } from "@/providers/RoomProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +39,15 @@ export default function RootLayout({
           <TopLoaderWrapper />
           <ToastWrapper />
           <Providers>
-            <main className="min-h-screen flex flex-col justify-center items-center">
-              <div className="max-w-sm min-h-screen text-primary-text-color">
-                <ThemeProvider>{children}</ThemeProvider>
-              </div>
-            </main>
+            <RoomProvider>
+              <QRVerificationProvider>
+                <main className="min-h-screen flex flex-col justify-center items-center">
+                  <div className="max-w-sm min-h-screen text-primary-text-color">
+                    <ThemeProvider>{children}</ThemeProvider>
+                  </div>
+                </main>
+              </QRVerificationProvider>
+            </RoomProvider>
           </Providers>
         </Suspense>
       </body>
