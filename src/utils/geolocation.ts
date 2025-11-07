@@ -121,7 +121,7 @@ export const ROOM_DATA_KEY = "room_data";
 export const ROOM_UUID_KEY = "room_uuid";
 
 /**
- * Save QR string to sessionStorage
+ * Save QR string to sessionStorage (cleared when tab/browser is closed)
  */
 export function saveQRString(qrString: string): void {
   if (typeof window !== "undefined") {
@@ -131,7 +131,7 @@ export function saveQRString(qrString: string): void {
 }
 
 /**
- * Save room data to sessionStorage
+ * Save room data to sessionStorage (cleared when tab/browser is closed)
  */
 export function saveRoomData(roomData: any): void {
   if (typeof window !== "undefined") {
@@ -190,5 +190,10 @@ export function clearQRVerification(): void {
     sessionStorage.removeItem(QR_VERIFIED_KEY);
     sessionStorage.removeItem(ROOM_DATA_KEY);
     sessionStorage.removeItem(ROOM_UUID_KEY);
+
+    // Also clear in-memory cache if fetchHelper is imported
+    if (typeof window !== "undefined" && (window as any).__clearQRCache) {
+      (window as any).__clearQRCache();
+    }
   }
 }

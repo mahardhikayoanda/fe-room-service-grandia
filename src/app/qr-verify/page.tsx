@@ -14,6 +14,7 @@ import {
 } from "@/utils/geolocation";
 import useCreateRoomLogin from "@/services/room/useCreateRoomLogin";
 import { useRoom } from "@/providers/RoomProvider";
+import { refreshQRCache } from "@/libs/react-query/service/fetchHelper";
 
 type VerificationStep = "loading" | "checking" | "success" | "error";
 
@@ -97,6 +98,9 @@ export default function QRVerifyPage() {
             saveQRString(qrString);
             saveRoomData(response.data);
             setRoomData(response.data);
+
+            // Refresh QR cache immediately for API calls
+            refreshQRCache();
 
             setState({
               step: "success",

@@ -6,6 +6,56 @@ import { getQueryCLient } from "../providers";
 import { apiVersion, baseURL, xClientVersion } from "@/constants";
 import { getQRString } from "@/utils/geolocation";
 
+// In-memory cache for QR string (persists during the entire session/tab lifecycle)
+// This cache will be cleared when tab/browser is closed (same as sessionStorage)
+let cachedQRString: string | null = null;
+
+/**
+ * Get QR string from in-memory cache (fast access)
+ * Reads from sessionStorage only once and caches in memory
+ */
+function getCachedQRString(): string {
+  // If cache is empty, read from sessionStorage and cache it
+  if (cachedQRString === null) {
+    cachedQRString = getQRString();
+
+    // Debug log
+    if (cachedQRString) {
+      console.log(
+        "✅ QR String loaded from sessionStorage and cached:",
+        cachedQRString
+      );
+    } else {
+      console.warn("⚠️ QR String not found in sessionStorage");
+    }
+  }
+
+  return cachedQRString || "";
+}
+
+/**
+ * Force refresh QR string cache from sessionStorage
+ * Call this after successful QR verification to update the cache
+ */
+export function refreshQRCache(): void {
+  cachedQRString = getQRString();
+  console.log("🔄 QR String cache refreshed:", cachedQRString);
+}
+
+/**
+ * Clear QR string cache
+ * Call this when user logs out or QR verification is cleared
+ */
+export function clearQRCache(): void {
+  cachedQRString = null;
+  console.log("🗑️ QR String cache cleared");
+}
+
+// Expose clearQRCache to window for cross-module access
+if (typeof window !== "undefined") {
+  (window as any).__clearQRCache = clearQRCache;
+}
+
 interface ResponseWrapper<T> {
   data: T;
   success: boolean;
@@ -36,7 +86,7 @@ const fetchHelper = async <T>(
       headers: {
         Authorization: `Bearer ${getCookie("token") || ""}`,
         "x-client-version": xClientVersion,
-        "room-qr-string": getQRString() || "",
+        "room-qr-string": getCachedQRString(),
         ...headerInit,
       },
     });

@@ -29,9 +29,11 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
 
     if (data) {
       setRoomDataState(data);
+      console.log("Room data loaded from sessionStorage:", data);
     }
     if (uuid) {
       setRoomUUID(uuid);
+      console.log("Room UUID loaded from sessionStorage:", uuid);
     }
   }, []);
 
