@@ -367,7 +367,7 @@ export default function QRVerifyPage() {
                 mb: 3,
               }}
             >
-              Silakan hubungi front desk untuk bantuan lebih lanjut.
+              Please contact the front desk for further assistance.
             </Typography>
 
             {/* Additional help for HTTPS issue */}
@@ -389,7 +389,7 @@ export default function QRVerifyPage() {
                     mb: 1,
                   }}
                 >
-                  ⚠️ Secure Connection Required
+                  Secure Connection Required
                 </Typography>
                 <Typography
                   sx={{

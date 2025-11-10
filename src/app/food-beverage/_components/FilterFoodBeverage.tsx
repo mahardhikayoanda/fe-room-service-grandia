@@ -68,7 +68,7 @@ export default function FilterFoodBeverage({
   }
 
   return (
-    <Box sx={{ px: 3, pb: 2, background: "white", mb: 2 }}>
+    <Box sx={{ px: 3, pb: 2, background: "white", mb: 1 }}>
       <Typography
         variant="body1"
         sx={{
@@ -207,8 +207,8 @@ export default function FilterFoodBeverage({
               >
                 <Box
                   sx={{
-                    width: isTwoCategories ? 70 : "100%",
-                    height: isTwoCategories ? 100 : isThreeCategories ? 70 : 80,
+                    width: isTwoCategories ? 60 : "100%",
+                    height: isTwoCategories ? 60 : isThreeCategories ? 70 : 80,
                     position: "relative",
                     backgroundColor: "#f5f5f5",
                     flexShrink: 0,
@@ -225,7 +225,8 @@ export default function FilterFoodBeverage({
                 </Box>
                 <Box
                   sx={{
-                    p: isTwoCategories ? 2 : isThreeCategories ? 1 : 1,
+                    py: isTwoCategories ? 0.5 : 1,
+                    px: 1,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",

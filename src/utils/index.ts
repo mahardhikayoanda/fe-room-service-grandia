@@ -32,15 +32,18 @@ export const cn = (...inputs: ClassValue[]): string => {
   return twMerge(clsx(inputs));
 };
 
-export function formatCurrency(
-  amount: number,
-  locale = "id-ID",
-  currency = "IDR"
+export function formatRupiah(
+  value: number | string | null | undefined
 ): string {
-  return new Intl.NumberFormat(locale, {
+  if (value === null || value === undefined || value === "") return "Rp0";
+
+  const numberValue = typeof value === "string" ? Number(value) : value;
+
+  if (isNaN(numberValue)) return "Rp0";
+
+  return new Intl.NumberFormat("id-ID", {
     style: "currency",
-    currency: currency,
+    currency: "IDR",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(numberValue);
 }

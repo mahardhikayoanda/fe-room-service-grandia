@@ -1,14 +1,11 @@
 "use client";
 
-import { menusDummyData } from "@/libs/data/menuDummyData";
 import Image from "next/image";
-import AddMenuButton from "./AddMenuButton";
 import { Typography } from "@mui/material";
-// import { categoryMenus } from "./FilterFoodBeverage";
-import { SearchX, ThumbsUp, Trophy } from "lucide-react";
-import AnimatedItem from "@/components/framer-motion/AnimatedItem";
+import { SearchX } from "lucide-react";
 import { CategoryType } from "@/types/category.type";
 import useGetProducts from "@/services/food-beverage/useGetProducts";
+import MenuCard from "./MenuCard";
 
 interface Props {
   filterValue: string;
@@ -75,7 +72,7 @@ export default function MenuList({
               }}
             >
               {" "}
-              {productData?.data?.length} items
+              {(productData?.data?.length ?? 0) > 1 ? "items" : "item"}
             </Typography>
           </div>
         )}
@@ -170,80 +167,14 @@ export default function MenuList({
         )}
 
         <div className={`flex flex-col`}>
+          {/* menu card */}
           {productData?.data?.map((item, index) => (
-            <AnimatedItem key={item.uuid} delay={index * 0.05}>
-              {/* tambahkan pb-20 pada card index terakhir */}
-              <div className="flex flex-col gap-0">
-                <div className="flex flex-row-reverse justify-center gap-4 mt-4">
-                  <div className="w-[90px] h-[90px] relative">
-                    <Image
-                      src={item.image.url}
-                      alt={item.name}
-                      fill
-                      priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain rounded-xl"
-                    />
-                  </div>
-
-                  <div className="flex-1">
-                    <Typography
-                      sx={{ fontWeight: 700, color: "#000", fontSize: "14px" }}
-                    >
-                      {item.name}
-                    </Typography>
-
-                    {item.is_best_seller && (
-                      <div className="flex items-center w-fit gap-2 my-1 px-2 py-1 rounded-sm text-[#67527A] bg-[#F2F0F5]">
-                        <Trophy size={16} />
-                        <p className="text-[12px]">Best Seller</p>
-                      </div>
-                    )}
-
-                    {item.is_recommended && (
-                      <div className="flex items-center w-fit gap-2 my-1 px-2 py-1 rounded-sm text-primary bg-[#F4F0F0]">
-                        <ThumbsUp size={16} />
-                        <p className="text-[12px]">Recommended</p>
-                      </div>
-                    )}
-
-                    <Typography
-                      sx={{
-                        mt: "4px",
-                        fontWeight: 400,
-                        color: "#000",
-                        fontSize: "12px",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item.description}
-                    </Typography>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center my-4">
-                  <Typography
-                    sx={{ fontWeight: 700, color: "#000", fontSize: "16px" }}
-                  >
-                    {item.price}
-                  </Typography>
-
-                  <AddMenuButton
-                    menuUuid={item.uuid}
-                    titleMenu={item.name}
-                    priceMenu={item.price}
-                  />
-                </div>
-
-                {index !== productData?.data?.length - 1 && (
-                  <hr className="mx-4 border-t border-gray-300" />
-                )}
-              </div>
-            </AnimatedItem>
+            <MenuCard
+              key={item.uuid}
+              item={item}
+              index={index}
+              isLastItem={index === (productData?.data?.length ?? 0) - 1}
+            />
           ))}
         </div>
       </div>
