@@ -9,17 +9,22 @@ import TextInput from "@/components/form/TextInput";
 import { Fade, InputAdornment, Typography } from "@mui/material";
 import { Search } from "lucide-react";
 import { useScrolled } from "@/libs/hooks/useScrolled";
+import useGetCategories from "@/services/food-beverage/useGetCategories";
 
 export default function FoodBeveragePage() {
-  const [filterValue, setFilterValue] = useState<string>("food");
+  const [filterValue, setFilterValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
 
   const isScrolled = useScrolled(5);
 
-  // clear searchValue when filterValue changes
+  const { data: categoryMenus, isLoading } = useGetCategories();
+
+  // clear filterValue when searchValue changes
   useEffect(() => {
-    setSearchValue("");
-  }, [filterValue]);
+    if (searchValue) {
+      setFilterValue("");
+    }
+  }, [searchValue]);
 
   // handle clear searchValue
   const handleClearSearch = () => {
@@ -75,13 +80,18 @@ export default function FoodBeveragePage() {
         <FilterFoodBeverage
           filterValue={filterValue}
           onFilterValue={setFilterValue}
+          categoryData={categoryMenus?.data}
         />
       )}
 
       {/* F&B items list */}
       <section className="flex flex-col items-center justify-center bg-white">
-        <div className="w-full min-h-screen mb-24">
-          <MenuList filterValue={filterValue} searchValue={searchValue} />
+        <div className="w-full">
+          <MenuList
+            filterValue={filterValue}
+            searchValue={searchValue}
+            categoryData={categoryMenus?.data}
+          />
         </div>
       </section>
 

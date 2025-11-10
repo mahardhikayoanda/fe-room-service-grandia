@@ -21,10 +21,7 @@ function getCachedQRString(): string {
 
     // Debug log
     if (cachedQRString) {
-      console.log(
-        "✅ QR String loaded from sessionStorage and cached:",
-        cachedQRString
-      );
+      console.log(cachedQRString);
     } else {
       console.warn("⚠️ QR String not found in sessionStorage");
     }

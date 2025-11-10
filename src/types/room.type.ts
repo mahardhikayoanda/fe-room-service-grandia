@@ -2,7 +2,7 @@ export interface RoomType {
   name: string;
 }
 
-export interface Service {
+export interface ServiceType {
   uuid: string;
   name: string;
   description: string;
@@ -11,7 +11,7 @@ export interface Service {
   is_available: number;
 }
 
-export interface Promo {
+export interface PromoType {
   uuid: string;
   name: string;
   description: string;
@@ -22,19 +22,19 @@ export interface Promo {
   is_available: number;
 }
 
-export interface RoomData {
+export interface RoomType {
   uuid: string;
   room_number: string;
   location: string;
   room_type: RoomType;
-  services: Service[];
-  promos: Promo[];
+  services: ServiceType[];
+  promos: PromoType[];
 }
 
 export interface RoomLoginResponse {
   success: boolean;
   message: string;
-  data: RoomData;
+  data: RoomType;
 }
 
 export interface RoomLoginRequest {

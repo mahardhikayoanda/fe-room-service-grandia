@@ -15,6 +15,7 @@ import {
 import useCreateRoomLogin from "@/services/room/useCreateRoomLogin";
 import { useRoom } from "@/providers/RoomProvider";
 import { refreshQRCache } from "@/libs/react-query/service/fetchHelper";
+import { IsCheckRadius } from "@/constants";
 
 type VerificationStep = "loading" | "checking" | "success" | "error";
 
@@ -62,26 +63,30 @@ export default function QRVerifyPage() {
         return;
       }
 
-      // Step 2: Check geolocation
-      setState({
-        step: "checking",
-        message: "Checking your location...",
-      });
-
-      const coords = await getUserLocation();
-      const withinRadius = isWithinHotelRadius(
-        coords.latitude,
-        coords.longitude
-      );
-
-      if (!withinRadius) {
+      // Step 2: Check geolocation (only if IsCheckRadius is true)
+      if (IsCheckRadius) {
         setState({
-          step: "error",
-          message: "Location Verification Failed",
-          error: `You must be within ${MAX_DISTANCE_KM} kilometers radius of Hotel Grandia to access this service. Please make sure you are at the hotel premises.`,
-          errorType: "location_failed",
+          step: "checking",
+          message: "Checking your location...",
         });
-        return;
+
+        const coords = await getUserLocation();
+        const withinRadius = isWithinHotelRadius(
+          coords.latitude,
+          coords.longitude
+        );
+
+        if (!withinRadius) {
+          setState({
+            step: "error",
+            message: "Location Verification Failed",
+            error: `You must be within ${MAX_DISTANCE_KM} kilometers radius of Hotel Grandia to access this service. Please make sure you are at the hotel premises.`,
+            errorType: "location_failed",
+          });
+          return;
+        }
+      } else {
+        console.log("⏭️ Radius check skipped (IsCheckRadius = false)");
       }
 
       // Step 3: Verify QR with backend

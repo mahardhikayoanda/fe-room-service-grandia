@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { getQueryCLient } from "@/libs/react-query/providers";
 import fetchHelper from "@/libs/react-query/service/fetchHelper";
 import TAGS from "@/constants/tags";
-import { RoomLoginRequest, RoomLoginResponse } from "@/types/room";
+import { RoomLoginRequest, RoomLoginResponse } from "@/types/room.type";
 
 const useCreateRoomLogin = (
   options?: UseMutationOptions<

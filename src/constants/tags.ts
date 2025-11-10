@@ -8,6 +8,11 @@ const TAGS = {
   // customer service
   CUSTOMER_SERVICE: "customer_service",
 
+  // food & beverage
+  PRODUCT: "product",
+  CATEGORY: "category",
+  CART: "cart",
+
   // test
   TEST: "test",
 };

@@ -15,7 +15,7 @@ import SwipeableDrawerWrapper from "@/components/SwipeableDrawerWrapper";
 interface Props {
   menuUuid?: string;
   titleMenu?: string;
-  priceMenu?: string;
+  priceMenu?: number;
 }
 
 export default function AddMenuButton({
