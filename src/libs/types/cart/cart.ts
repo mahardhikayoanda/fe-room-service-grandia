@@ -7,7 +7,7 @@ export interface ModifierOption {
 export interface Modifier {
   uuid: string;
   name: string;
-  options: ModifierOption[];
+  modifier_items: ModifierOption[];
 }
 
 export interface SelectedMenu {

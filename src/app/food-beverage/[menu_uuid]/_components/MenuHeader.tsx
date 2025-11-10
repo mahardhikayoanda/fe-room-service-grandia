@@ -5,6 +5,7 @@ import { Box, IconButton, Typography, Chip } from "@mui/material";
 import { ArrowLeft, ThumbsUp, Trophy } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import Image from "next/image";
+import { formatRupiah } from "@/utils";
 
 interface MenuHeaderProps {
   title: string;
@@ -72,7 +73,7 @@ export default function MenuHeader({
         )}
 
         <Box className="text-2xl font-bold text-gray-900">
-          RP {price.toLocaleString("id-ID")}
+          {formatRupiah(price)}
         </Box>
       </Box>
     </Box>

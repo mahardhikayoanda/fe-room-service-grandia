@@ -69,7 +69,6 @@ export default function OrderCard({
               // list all modifier choices
               modifierChoices.map((modifier) => (
                 <Typography
-                  key={modifier.name}
                   variant="body2"
                   sx={{
                     fontSize: "12px",
@@ -78,7 +77,7 @@ export default function OrderCard({
                   }}
                 >
                   <span style={{ fontWeight: 500 }}>{modifier.name}:</span>{" "}
-                  {modifier.options.map((opt) => opt.name).join(", ")}
+                  {modifier.modifier_items.map((opt) => opt.name).join(", ")}
                 </Typography>
               ))}
             {notes && (

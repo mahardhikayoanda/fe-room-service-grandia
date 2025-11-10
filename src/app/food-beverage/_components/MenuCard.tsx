@@ -6,19 +6,10 @@ import { Trophy, ThumbsUp } from "lucide-react";
 import AddMenuButton from "./AddMenuButton";
 import { formatRupiah } from "@/utils";
 import AnimatedItem from "@/components/framer-motion/AnimatedItem";
+import { ProductType } from "@/types/product.type";
 
 interface MenuCardProps {
-  item: {
-    uuid: string;
-    name: string;
-    description: string;
-    price: number;
-    image: {
-      url: string;
-    };
-    is_best_seller: boolean;
-    is_recommended: boolean;
-  };
+  item: ProductType;
   index: number;
   isLastItem: boolean;
 }

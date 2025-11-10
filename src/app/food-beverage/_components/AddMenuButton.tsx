@@ -103,7 +103,7 @@ export default function AddMenuButton({
     }
 
     // if not already selected, navigate to the modifier-item page
-    router.push(`/food-beverage/modifier-item?menuId=${menuUuid}`);
+    router.push(`/food-beverage/${menuUuid}`);
   };
 
   return (
@@ -191,14 +191,13 @@ export default function AddMenuButton({
                     {modifier.name}:{" "}
                   </Typography>
                   <Typography
-                    component="span"
                     sx={{
                       fontSize: "14px",
                       fontWeight: "400",
                       color: "#4C4C4C",
                     }}
                   >
-                    {modifier.options.map((opt) => opt.name).join(", ")}
+                    {modifier.modifier_items.map((opt) => opt.name).join(", ")}
                   </Typography>
                 </Box>
               ))}
@@ -243,7 +242,7 @@ export default function AddMenuButton({
                 <Button
                   onClick={() => {
                     router.push(
-                      `/food-beverage/modifier-item?menuId=${menuUuid}&editIndex=${index}`
+                      `/food-beverage/${menuUuid}&editIndex=${index}`
                     );
                   }}
                   variant="outlined"
@@ -367,7 +366,7 @@ export default function AddMenuButton({
           fullWidth
           variant="contained"
           onClick={() => {
-            router.push(`/food-beverage/modifier-item?menuId=${menuUuid}`);
+            router.push(`/food-beverage/${menuUuid}`);
           }}
           sx={{
             bgcolor: "#4F3534",

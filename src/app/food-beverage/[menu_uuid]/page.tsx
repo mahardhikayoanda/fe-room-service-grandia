@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Box, Button } from "@mui/material";
 import { useAppDispatch } from "@/libs/hooks/useRedux";
 import { addMenuToCart } from "@/libs/store/slices/cartSlice";
@@ -9,6 +9,7 @@ import ModifierSection from "./_components/ModifierSection";
 import NotesInput from "./_components/NotesInput";
 import QuantitySelector from "./_components/QuantitySelector";
 import { useRouter } from "nextjs-toploader/app";
+import useGetProduct from "@/services/food-beverage/useGetProduct";
 
 // Mock data - sesuaikan dengan data real Anda
 const menuData = {
@@ -16,20 +17,24 @@ const menuData = {
   name: "Avocado Toast with egg",
   description:
     "Avocado Toast with Egg: Begin by toasting your favorite bread, then top it with creamy avocado and a perfectly...",
-  image: "/images/f_and_b/food.png",
-  basePrice: 24000,
-  isRecommended: true,
-  isBestSeller: false,
+  price: 24000,
+  is_available: true,
+  is_recommended: true,
+  is_best_seller: false,
+  sold_count: 150,
+  image: {
+    uuid: "img1",
+    url: "https://indomie.wangun.co/storage/file/2025-11-06/kgZoCKKDXjIurrlnXHRhxBGyL.jpg",
+  },
 };
 
 const modifierOptions = [
   {
     uuid: "01",
     name: "Pilihan Telor",
-
     is_required: true,
     can_choose_multiple: false,
-    options: [
+    modifier_items: [
       {
         uuid: "001",
         name: "Matang",
@@ -45,7 +50,7 @@ const modifierOptions = [
     name: "Pilihan Saus",
     is_required: false,
     can_choose_multiple: true,
-    options: [
+    modifier_items: [
       {
         uuid: "001",
         name: "Saus mentai",
@@ -62,9 +67,17 @@ const modifierOptions = [
   },
 ];
 
-export default function ModifierItemPage() {
+export default function ModifierItemPage({
+  params,
+}: {
+  params: Promise<{ menu_uuid: string }>;
+}) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const { menu_uuid } = use(params);
+
+  // const { data, isLoading } = useGetProduct(menu_uuid);
 
   // Initialize state with first option from each modifier group
   const [selectedModifiers, setSelectedModifiers] = useState<
@@ -90,7 +103,7 @@ export default function ModifierItemPage() {
       .map((modifier) => ({
         uuid: modifier.uuid,
         name: modifier.name,
-        options: modifier.options.filter((option) =>
+        modifier_items: modifier.modifier_items.filter((option) =>
           selectedModifiers[modifier.uuid].includes(option.uuid)
         ),
       }));
@@ -98,12 +111,12 @@ export default function ModifierItemPage() {
     const menuToAdd = {
       uuid: menuData.uuid,
       name: menuData.name,
-      image: menuData.image,
+      image: menuData.image.url,
       modifiers,
       notes,
       quantity,
-      basePrice: menuData.basePrice,
-      totalPrice: menuData.basePrice * quantity,
+      basePrice: menuData.price,
+      totalPrice: menuData.price * quantity,
     };
 
     // Dispatch to Redux store
@@ -129,10 +142,10 @@ export default function ModifierItemPage() {
       <MenuHeader
         title={menuData.name}
         subtitle={menuData.description}
-        image={menuData.image}
-        isRecommended={menuData.isRecommended}
-        price={menuData.basePrice}
-        isBestSeller={menuData.isBestSeller}
+        image={menuData.image.url}
+        isRecommended={menuData.is_recommended}
+        price={menuData.price}
+        isBestSeller={menuData.is_best_seller}
       />
 
       {/* Modifier Sections */}
@@ -143,7 +156,7 @@ export default function ModifierItemPage() {
           title={modifier.name}
           required={modifier.is_required}
           canChooseMultiple={modifier.can_choose_multiple}
-          options={modifier.options}
+          options={modifier.modifier_items}
           selectedValues={selectedModifiers[modifier.uuid] || []}
           onChange={(optionUuids) =>
             handleModifierChange(modifier.uuid, optionUuids)
