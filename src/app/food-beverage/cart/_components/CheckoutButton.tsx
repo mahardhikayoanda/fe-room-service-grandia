@@ -8,9 +8,9 @@ import {
   selectCartTotalPrice,
 } from "@/libs/store/slices/cartSlice";
 import { useRouter } from "nextjs-toploader/app";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaymentMethodModal from "./PaymentMethodModal";
-import useCreateCheckout from "@/services/food-beverage/useCheckout";
+import useCreateCheckout from "@/services/order/useCreateCheckoutOrder";
 import { formatRupiah, roundToThousand } from "@/utils";
 import { toast } from "react-toastify";
 import { CheckoutPayload } from "../_utils/checkout-schema";
@@ -34,20 +34,70 @@ export default function CheckoutButton({
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentMethodId, setPaymentMethodId] = useState("");
 
-  // Checkout mutation
-  // const checkoutMutation = useCreateCheckout({
-  //   onSuccess: (data) => {
-  //     toast.success("Order berhasil dibuat!");
-  //     console.log("Checkout success:", data);
-  //     router.push("/food-beverage/cart/tracking-order");
-  //   },
-  //   onError: (error: any) => {
-  //     toast.error(error?.response?.data?.message || "Checkout gagal!");
-  //     console.error("Checkout error:", error);
-  //   },
-  // });
+  // Load Midtrans Snap script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.setAttribute(
+      "data-client-key",
+      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
+    );
+    script.async = true;
+    document.body.appendChild(script);
 
-  const { mutate, isPending } = useCreateCheckout();
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  // Checkout mutation
+  const { mutate, isPending } = useCreateCheckout({
+    onSuccess: (response) => {
+      toast.success("Order berhasil dibuat!");
+      console.log("Checkout success:", response);
+
+      // Navigate based on payment method
+      if (paymentMethodId === "non-tunai" && response.data?.snap_token) {
+        // For Midtrans payment - open Snap UI
+        const snapInstance = (window as any).snap;
+        if (snapInstance) {
+          snapInstance.pay(response.data.snap_token, {
+            onSuccess: function (result: any) {
+              console.log("Payment success:", result);
+              toast.success("Pembayaran berhasil!");
+              // Navigate to tracking order after successful payment
+              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
+            },
+            onPending: function (result: any) {
+              console.log("Payment pending:", result);
+              toast.info("Menunggu pembayaran...");
+              // Navigate to tracking order with pending status
+              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
+            },
+            onError: function (result: any) {
+              console.log("Payment error:", result);
+              toast.error("Pembayaran gagal!");
+            },
+            onClose: function () {
+              console.log("Payment popup closed");
+              // User closed the popup, navigate to tracking order
+              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
+            },
+          });
+        } else {
+          toast.error("Midtrans Snap belum dimuat. Silakan coba lagi.");
+        }
+      } else {
+        // For cash or charge to room - go to tracking order directly
+        router.push(`/food-beverage/cart/${response.data.order.uuid}`);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Checkout gagal!");
+      console.error("Checkout error:", error);
+      // Don't navigate on error
+    },
+  });
 
   // Don't show the button if cart is empty
   if (totalItems === 0) {
@@ -81,18 +131,8 @@ export default function CheckoutButton({
 
     const payload = onBuildPayload(paymentMethodValue);
 
-    console.log("Checkout payload:", payload);
-
-    // Uncomment this when API is ready
+    // Submit checkout - navigation will be handled in onSuccess callback
     mutate(payload);
-
-    // For now, just navigate (for testing)
-    if (paymentMethodId === "non-tunai") {
-      console.log("open midtrans gateway");
-      // TODO: Open Midtrans payment gateway
-    } else {
-      // router.push("/food-beverage/cart/tracking-order");
-    }
   };
 
   const handlePaymentOptions = () => {

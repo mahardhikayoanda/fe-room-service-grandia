@@ -1,26 +1,15 @@
 "use client";
 
 import { Modifier } from "@/libs/types/cart/cart";
+import { MenuOrderType } from "@/types/order.type";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
 interface OrderCardProps {
-  title: string;
-  image: string;
-  modifierChoices?: Modifier[];
-  notes?: string;
-  price: number;
-  quantity: number;
+  item?: MenuOrderType;
 }
 
-export default function OrderCard({
-  title,
-  image,
-  modifierChoices,
-  notes,
-  price,
-  quantity,
-}: OrderCardProps) {
+export default function OrderCard({ item }: OrderCardProps) {
   const formatPrice = (price: number) => {
     return `Rp${price.toLocaleString("id-ID")}`;
   };
@@ -53,14 +42,14 @@ export default function OrderCard({
               mb: 1,
             }}
           >
-            {title}
+            {item?.name}
           </Typography>
 
           {/* Choices */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-            {modifierChoices &&
+            {item?.modifiers &&
               // list all modifier choices
-              modifierChoices.map((modifier, index) => (
+              item.modifiers.map((modifier, index) => (
                 <Typography
                   key={index}
                   variant="body2"
@@ -70,11 +59,13 @@ export default function OrderCard({
                     color: "#666",
                   }}
                 >
-                  <span style={{ fontWeight: 500 }}>{modifier.name}:</span>{" "}
+                  <span style={{ fontWeight: 700, color: "#000" }}>
+                    {modifier.name}:
+                  </span>{" "}
                   {modifier.modifier_items.map((opt) => opt.name).join(", ")}
                 </Typography>
               ))}
-            {notes && (
+            {item?.remark && (
               <Typography
                 variant="body2"
                 sx={{
@@ -82,7 +73,7 @@ export default function OrderCard({
                   color: "#666",
                 }}
               >
-                <span style={{ fontWeight: 500 }}>Notes:</span> {notes}
+                <span style={{ fontWeight: 500 }}>Notes:</span> {item.remark}
               </Typography>
             )}
           </Box>
@@ -95,9 +86,9 @@ export default function OrderCard({
                 color: "#000",
               }}
             >
-              {formatPrice(price)}
+              {formatPrice(Number(item?.total_price))}
             </Typography>
-            {quantity > 1 && (
+            {(item?.quantity ?? 0) > 1 && (
               <Typography
                 sx={{
                   fontSize: "14px",
@@ -105,7 +96,7 @@ export default function OrderCard({
                   color: "#0F67B9",
                 }}
               >
-                &nbsp; x {quantity}
+                &nbsp; x {item?.quantity}
               </Typography>
             )}
           </Box>
@@ -123,8 +114,8 @@ export default function OrderCard({
           }}
         >
           <Image
-            src={image}
-            alt={title}
+            src={item?.image.url || ""}
+            alt={item?.name || ""}
             fill
             style={{ objectFit: "cover" }}
             sizes="312px"

@@ -9,7 +9,7 @@ import ComplaintRequestStatus from "./_components/ComplaintRequestStatus";
 import ComplaintRequestMainInfo from "./_components/ComplaintRequestMainInfo";
 import { Box, Button, Divider } from "@mui/material";
 import ComplaintRequestNumber from "./_components/ComplaintRequestNumber";
-import BackNavigationConfirm from "@/app/food-beverage/cart/tracking-order/_components/BackNavigationConfirm";
+import BackNavigationConfirm from "@/app/food-beverage/cart/[order_uuid]/_components/BackNavigationConfirm";
 
 export default function TrackingComplaintRequestPage() {
   const isScrolled = useScrolled(5);

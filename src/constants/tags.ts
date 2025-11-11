@@ -12,6 +12,9 @@ const TAGS = {
   PRODUCT: "product",
   CATEGORY: "category",
   CART: "cart",
+
+  // order
+  ORDER: "order",
   CHECKOUT: "checkout",
 
   // test

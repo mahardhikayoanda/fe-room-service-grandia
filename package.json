@@ -26,6 +26,7 @@
     "dayjs": "^1.11.18",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.542.0",
+    "midtrans-client": "^1.4.3",
     "next": "15.5.2",
     "nextjs-toploader": "^3.8.16",
     "plaiceholder": "^3.0.0",
