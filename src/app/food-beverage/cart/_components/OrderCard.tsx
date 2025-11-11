@@ -67,8 +67,9 @@ export default function OrderCard({
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
             {modifierChoices &&
               // list all modifier choices
-              modifierChoices.map((modifier) => (
+              modifierChoices.map((modifier, index) => (
                 <Typography
+                  key={index}
                   variant="body2"
                   sx={{
                     fontSize: "12px",

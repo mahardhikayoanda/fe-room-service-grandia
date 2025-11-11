@@ -47,3 +47,12 @@ export function formatRupiah(
     minimumFractionDigits: 0,
   }).format(numberValue);
 }
+
+/**
+ * Rounds a number to the nearest thousand (e.g., 15500 -> 16000, 15400 -> 15000)
+ * @param {number} value - The value to be rounded.
+ * @returns {number} The rounded value.
+ */
+export function roundToThousand(value: number): number {
+  return Math.round(value / 1000) * 1000;
+}

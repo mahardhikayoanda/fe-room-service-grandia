@@ -17,9 +17,6 @@ const useCreateRequestComplaint = (
   return useMutation({
     ...options,
     mutationFn: async (formData: CustomerServiceFormType) => {
-      // const payload: CustomerServicePayload =
-      //   await transformFormDataToPayload(formData);
-
       return fetchHelper(
         "/customer-service/complaint-and-request",
         "POST",

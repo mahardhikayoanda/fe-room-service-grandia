@@ -2,22 +2,15 @@
 
 import { Box, Typography } from "@mui/material";
 import { Info as InfoIcon, User, Phone } from "lucide-react";
-
+import { Control } from "react-hook-form";
 import TextInput from "@/components/form/TextInput";
+import { CheckoutFormType } from "../_utils/checkout-schema";
 
 interface PersonalInfoFormProps {
-  fullName: string;
-  phoneNumber: string;
-  onFullNameChange: (value: string) => void;
-  onPhoneNumberChange: (value: string) => void;
+  control: Control<CheckoutFormType>;
 }
 
-export default function PersonalInfoForm({
-  fullName,
-  phoneNumber,
-  onFullNameChange,
-  onPhoneNumberChange,
-}: PersonalInfoFormProps) {
+export default function PersonalInfoForm({ control }: PersonalInfoFormProps) {
   return (
     <Box sx={{ mb: 3 }}>
       <Box
@@ -43,23 +36,20 @@ export default function PersonalInfoForm({
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <TextInput
-          fullWidth
-          required
+          name="name"
+          control={control}
           label="Full name"
           placeholder="Enter full name"
-          value={fullName}
-          onChange={(e) => onFullNameChange(e.target.value)}
+          required
           startIcon={<User size={20} />}
         />
 
         <TextInput
-          fullWidth
-          required
+          name="phone_number"
+          control={control}
           label="Phone Number"
           placeholder="Enter phone number"
-          value={phoneNumber}
-          onChange={(e) => onPhoneNumberChange(e.target.value)}
-          type="tel"
+          required
           startIcon={<Phone size={20} />}
         />
       </Box>

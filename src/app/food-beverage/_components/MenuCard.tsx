@@ -71,13 +71,13 @@ export default function MenuCard({ item, index, isLastItem }: MenuCardProps) {
 
         <div className="flex justify-between items-center my-4">
           <Typography sx={{ fontWeight: 700, color: "#000", fontSize: "16px" }}>
-            {formatRupiah(item.price)}
+            {formatRupiah(item.selling_price)}
           </Typography>
 
           <AddMenuButton
             menuUuid={item.uuid}
             titleMenu={item.name}
-            priceMenu={item.price}
+            priceMenu={item.selling_price}
           />
         </div>
 

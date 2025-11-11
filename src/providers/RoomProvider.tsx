@@ -1,13 +1,13 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { RoomType } from "@/types/room.type";
+import { RoomDataType } from "@/types/room.type";
 import { getRoomData, getRoomUUID } from "@/utils/geolocation";
 
 interface RoomContextType {
-  roomData: RoomType | null;
+  roomData: RoomDataType | null;
   roomUUID: string | null;
-  setRoomData: (data: RoomType | null) => void;
+  setRoomData: (data: RoomDataType | null) => void;
 }
 
 const RoomContext = createContext<RoomContextType>({
@@ -19,7 +19,7 @@ const RoomContext = createContext<RoomContextType>({
 export const useRoom = () => useContext(RoomContext);
 
 export function RoomProvider({ children }: { children: React.ReactNode }) {
-  const [roomData, setRoomDataState] = useState<RoomType | null>(null);
+  const [roomData, setRoomDataState] = useState<RoomDataType | null>(null);
   const [roomUUID, setRoomUUID] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function RoomProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setRoomData = (data: RoomType | null) => {
+  const setRoomData = (data: RoomDataType | null) => {
     setRoomDataState(data);
     if (data) {
       setRoomUUID(data.uuid);

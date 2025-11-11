@@ -2,7 +2,7 @@
 
 import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
-import React from "react";
+import React, { useEffect } from "react";
 import DeliveryRoomInfo from "./_components/DeliveryRoomInfo";
 import PersonalInfoForm from "./_components/PersonalInfoForm";
 import OrderCard from "./_components/OrderCard";
@@ -18,20 +18,44 @@ import { useRouter } from "next/navigation";
 import PaymentSummary from "./_components/PaymentSummary";
 import CheckoutButton from "./_components/CheckoutButton";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRoom } from "@/providers/RoomProvider";
+import { roundToThousand } from "@/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  CheckoutFormSchema,
+  CheckoutFormType,
+  CheckoutPayload,
+  defaultCheckoutForm,
+} from "./_utils/checkout-schema";
 
 export default function ChartPage() {
   const isScrolled = useScrolled(5);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { roomData, roomUUID } = useRoom();
 
   // Redux state
   const selectedMenus = useAppSelector(selectSelectedMenus);
   const cartItemCount = useAppSelector(selectCartItemCount);
   const totalPrice = useAppSelector(selectCartTotalPrice);
 
+  // React Hook Form
+  const {
+    control,
+    watch,
+    formState: { isValid },
+  } = useForm<CheckoutFormType>({
+    defaultValues: defaultCheckoutForm,
+    resolver: zodResolver(CheckoutFormSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
+  // Watch form values
+  const formValues = watch();
+
   // Local state
-  const [fullName, setFullName] = React.useState<string>("");
-  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const [showAll, setShowAll] = React.useState<boolean>(false);
 
   // Calculate displayed menus
@@ -59,6 +83,42 @@ export default function ChartPage() {
     router.push("/food-beverage");
   };
 
+  // Function to build checkout payload
+  const buildCheckoutPayload = (
+    paymentMethod: "cash" | "charge_to_room" | null
+  ): CheckoutPayload => {
+    const orderItems = selectedMenus.map((menu) => ({
+      item_uuid: menu.uuid,
+      name: menu.name,
+      price: menu.basePrice,
+      quantity: menu.quantity,
+      total_price: menu.totalPrice,
+      remark: menu.notes || undefined,
+      modifiers: menu.modifiers.map((modifier) => ({
+        name: modifier.name,
+        modifier_items: modifier.modifier_items.map((item) => ({
+          name: item.name,
+        })),
+      })),
+    }));
+
+    const grandTotal = totalPrice;
+    const roundedGrandTotal = roundToThousand(grandTotal);
+
+    return {
+      room_uuid: roomUUID || "",
+      promo_uuid: "",
+      service_code: "fnb",
+      name: formValues.name,
+      phone_number: formValues.phone_number,
+      payment_method: paymentMethod,
+      order_items: orderItems,
+      grand_total: grandTotal,
+      rounded_grand_total: roundedGrandTotal,
+      total_discount: 0,
+    };
+  };
+
   return (
     <div className="w-full min-h-screen relative min-w-sm">
       {/* F&B header */}
@@ -71,17 +131,8 @@ export default function ChartPage() {
       {/* Delivery Room Info */}
       <section className="flex flex-col items-center justify-center bg-white mt-1">
         <div className="w-full px-6">
-          <DeliveryRoomInfo
-            roomNumber={"101"}
-            roomType={"Deluxe"}
-            floor={"1st"}
-          />
-          <PersonalInfoForm
-            fullName={fullName}
-            phoneNumber={phoneNumber}
-            onFullNameChange={setFullName}
-            onPhoneNumberChange={setPhoneNumber}
-          />
+          {roomData && <DeliveryRoomInfo roomData={roomData} />}
+          <PersonalInfoForm control={control} />
         </div>
       </section>
 
@@ -247,7 +298,10 @@ export default function ChartPage() {
 
       {/* button payment */}
       <section className="mt-1">
-        <CheckoutButton />
+        <CheckoutButton
+          onBuildPayload={buildCheckoutPayload}
+          isFormValid={isValid}
+        />
       </section>
     </div>
   );

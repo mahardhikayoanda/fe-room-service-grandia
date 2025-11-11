@@ -1,4 +1,5 @@
 import { latitude, longitude, radius } from "@/constants";
+import { RoomDataType } from "@/types/room.type";
 
 /**
  * Hotel Grandia location coordinates
@@ -143,7 +144,7 @@ export function saveRoomData(roomData: any): void {
 /**
  * Get room data from sessionStorage
  */
-export function getRoomData(): any | null {
+export function getRoomData(): RoomDataType | null {
   if (typeof window !== "undefined") {
     const data = sessionStorage.getItem(ROOM_DATA_KEY);
     return data ? JSON.parse(data) : null;

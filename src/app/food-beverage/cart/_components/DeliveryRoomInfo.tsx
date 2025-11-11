@@ -1,20 +1,15 @@
 "use client";
 
+import { RoomDataType } from "@/types/room.type";
 import { Box, Paper, Typography } from "@mui/material";
 import { DoorOpen } from "lucide-react";
 import Image from "next/image";
 
 interface DeliveryRoomInfoProps {
-  roomNumber: string;
-  roomType: string;
-  floor: string;
+  roomData: RoomDataType;
 }
 
-export default function DeliveryRoomInfo({
-  roomNumber,
-  roomType,
-  floor,
-}: DeliveryRoomInfoProps) {
+export default function DeliveryRoomInfo({ roomData }: DeliveryRoomInfoProps) {
   return (
     <Box sx={{ mb: 2, mt: 2, width: "100%" }}>
       <Typography
@@ -66,7 +61,7 @@ export default function DeliveryRoomInfo({
               mb: 0.5,
             }}
           >
-            Room {roomNumber}
+            Room {roomData.room_number}
           </Typography>
           <Typography
             variant="body1"
@@ -76,7 +71,7 @@ export default function DeliveryRoomInfo({
               fontWeight: 500,
             }}
           >
-            {roomType} - {floor}
+            {roomData.room_type.name} - {roomData.location}
           </Typography>
         </Box>
       </Paper>

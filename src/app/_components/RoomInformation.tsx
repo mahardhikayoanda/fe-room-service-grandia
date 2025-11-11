@@ -1,19 +1,12 @@
 import SwipeableDrawerWrapper from "@/components/SwipeableDrawerWrapper";
-import {
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  SwipeableDrawer,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { Home } from "lucide-react";
 import { useState } from "react";
 import { useRoom } from "@/providers/RoomProvider";
 
 export default function RoomInformation() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { roomData, roomUUID } = useRoom();
+  const { roomData } = useRoom();
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);

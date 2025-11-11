@@ -8,64 +8,65 @@ import MenuHeader from "./_components/MenuHeader";
 import ModifierSection from "./_components/ModifierSection";
 import NotesInput from "./_components/NotesInput";
 import QuantitySelector from "./_components/QuantitySelector";
+import ModifierItemSkeleton from "./_components/ModifierItemSkeleton";
 import { useRouter } from "nextjs-toploader/app";
 import useGetProduct from "@/services/food-beverage/useGetProduct";
 
 // Mock data - sesuaikan dengan data real Anda
-const menuData = {
-  uuid: "1",
-  name: "Avocado Toast with egg",
-  description:
-    "Avocado Toast with Egg: Begin by toasting your favorite bread, then top it with creamy avocado and a perfectly...",
-  price: 24000,
-  is_available: true,
-  is_recommended: true,
-  is_best_seller: false,
-  sold_count: 150,
-  image: {
-    uuid: "img1",
-    url: "https://indomie.wangun.co/storage/file/2025-11-06/kgZoCKKDXjIurrlnXHRhxBGyL.jpg",
-  },
-};
+// const menuData = {
+//   uuid: "1",
+//   name: "Avocado Toast with egg",
+//   description:
+//     "Avocado Toast with Egg: Begin by toasting your favorite bread, then top it with creamy avocado and a perfectly...",
+//   price: 24000,
+//   is_available: true,
+//   is_recommended: true,
+//   is_best_seller: false,
+//   sold_count: 150,
+//   image: {
+//     uuid: "img1",
+//     url: "https://indomie.wangun.co/storage/file/2025-11-06/kgZoCKKDXjIurrlnXHRhxBGyL.jpg",
+//   },
+// };
 
-const modifierOptions = [
-  {
-    uuid: "01",
-    name: "Pilihan Telor",
-    is_required: true,
-    can_choose_multiple: false,
-    modifier_items: [
-      {
-        uuid: "001",
-        name: "Matang",
-      },
-      {
-        uuid: "002",
-        name: "Setengah Matang",
-      },
-    ],
-  },
-  {
-    uuid: "02",
-    name: "Pilihan Saus",
-    is_required: false,
-    can_choose_multiple: true,
-    modifier_items: [
-      {
-        uuid: "001",
-        name: "Saus mentai",
-      },
-      {
-        uuid: "002",
-        name: "Saus ABC",
-      },
-      {
-        uuid: "003",
-        name: "Mayonase",
-      },
-    ],
-  },
-];
+// const modifierOptions = [
+//   {
+//     uuid: "01",
+//     name: "Pilihan Telor",
+//     is_required: true,
+//     can_choose_multiple: false,
+//     modifier_items: [
+//       {
+//         uuid: "001",
+//         name: "Matang",
+//       },
+//       {
+//         uuid: "002",
+//         name: "Setengah Matang",
+//       },
+//     ],
+//   },
+//   {
+//     uuid: "02",
+//     name: "Pilihan Saus",
+//     is_required: false,
+//     can_choose_multiple: true,
+//     modifier_items: [
+//       {
+//         uuid: "001",
+//         name: "Saus mentai",
+//       },
+//       {
+//         uuid: "002",
+//         name: "Saus ABC",
+//       },
+//       {
+//         uuid: "003",
+//         name: "Mayonase",
+//       },
+//     ],
+//   },
+// ];
 
 export default function ModifierItemPage({
   params,
@@ -77,7 +78,9 @@ export default function ModifierItemPage({
 
   const { menu_uuid } = use(params);
 
-  // const { data, isLoading } = useGetProduct(menu_uuid);
+  const { data: menuData, isLoading } = useGetProduct(menu_uuid);
+
+  const modifierOptions = menuData?.modifiers || [];
 
   // Initialize state with first option from each modifier group
   const [selectedModifiers, setSelectedModifiers] = useState<
@@ -97,6 +100,9 @@ export default function ModifierItemPage({
   };
 
   const handleAddToCart = () => {
+    // Guard clause: ensure menuData exists
+    if (!menuData) return;
+
     // Transform selectedModifiers to match the expected structure
     const modifiers = modifierOptions
       .filter((modifier) => selectedModifiers[modifier.uuid]?.length > 0)
@@ -115,8 +121,8 @@ export default function ModifierItemPage({
       modifiers,
       notes,
       quantity,
-      basePrice: menuData.price,
-      totalPrice: menuData.price * quantity,
+      basePrice: menuData.selling_price,
+      totalPrice: menuData.selling_price * quantity,
     };
 
     // Dispatch to Redux store
@@ -136,6 +142,11 @@ export default function ModifierItemPage({
     }
   };
 
+  // Show loading skeleton while data is being fetched
+  if (isLoading || !menuData) {
+    return <ModifierItemSkeleton />;
+  }
+
   return (
     <Box className="max-w-sm min-h-screen bg-[#F2F2F2] pb-0 relative">
       {/* Header with Image */}
@@ -144,7 +155,7 @@ export default function ModifierItemPage({
         subtitle={menuData.description}
         image={menuData.image.url}
         isRecommended={menuData.is_recommended}
-        price={menuData.price}
+        price={menuData.selling_price}
         isBestSeller={menuData.is_best_seller}
       />
 
