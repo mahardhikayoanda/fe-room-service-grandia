@@ -103,17 +103,19 @@ export default function ModifierItemPage({
       setQuantity((prev) => prev - 1);
     }
   };
+
   // Initialize form when editing
   useEffect(() => {
     if (!menuData) return;
-
     if (typeof editIndex === "number" && !isNaN(editIndex)) {
-      // Find all selected menus with same uuid
-      const sameMenus = selectedMenus.filter((m) => m.uuid === menuData.uuid);
-      if (editIndex >= 0 && editIndex < sameMenus.length) {
-        const target = sameMenus[editIndex];
+      // First, check whether editIndex is a global index into selectedMenus (OrderCard passes global index)
+      if (
+        editIndex >= 0 &&
+        editIndex < selectedMenus.length &&
+        selectedMenus[editIndex].uuid === menuData.uuid
+      ) {
+        const target = selectedMenus[editIndex];
 
-        // Build selectedModifiers from target.modifiers
         const initialModifiers: Record<string, string[]> = {};
         target.modifiers.forEach((mod) => {
           initialModifiers[mod.uuid] = mod.modifier_items.map((o) => o.uuid);
@@ -123,22 +125,41 @@ export default function ModifierItemPage({
         setNotes(target.notes || "");
         setQuantity(target.quantity || 1);
 
-        // Compute global index in selectedMenus
-        let count = -1;
-        let globalIdx: number | null = null;
-        for (let i = 0; i < selectedMenus.length; i++) {
-          if (selectedMenus[i].uuid === menuData.uuid) {
-            count += 1;
-            if (count === editIndex) {
-              globalIdx = i;
-              break;
+        setEditGlobalIndex(editIndex);
+        setIsEditMode(true);
+      } else {
+        // Fallback: treat editIndex as local index among items with same uuid (AddMenuButton passes local index)
+        const sameMenus = selectedMenus.filter((m) => m.uuid === menuData.uuid);
+        if (editIndex >= 0 && editIndex < sameMenus.length) {
+          const target = sameMenus[editIndex];
+
+          // Build selectedModifiers from target.modifiers
+          const initialModifiers: Record<string, string[]> = {};
+          target.modifiers.forEach((mod) => {
+            initialModifiers[mod.uuid] = mod.modifier_items.map((o) => o.uuid);
+          });
+
+          setSelectedModifiers(initialModifiers);
+          setNotes(target.notes || "");
+          setQuantity(target.quantity || 1);
+
+          // Compute global index in selectedMenus
+          let count = -1;
+          let globalIdx: number | null = null;
+          for (let i = 0; i < selectedMenus.length; i++) {
+            if (selectedMenus[i].uuid === menuData.uuid) {
+              count += 1;
+              if (count === editIndex) {
+                globalIdx = i;
+                break;
+              }
             }
           }
-        }
 
-        if (globalIdx !== null) {
-          setEditGlobalIndex(globalIdx);
-          setIsEditMode(true);
+          if (globalIdx !== null) {
+            setEditGlobalIndex(globalIdx);
+            setIsEditMode(true);
+          }
         }
       }
     }

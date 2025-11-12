@@ -2,7 +2,7 @@
 
 import { Box, Button, Typography } from "@mui/material";
 import { ChevronRight } from "lucide-react";
-import { useAppSelector } from "@/libs/hooks/useRedux";
+import { useAppSelector, useAppDispatch } from "@/libs/hooks/useRedux";
 import {
   selectCartItemCount,
   selectCartTotalPrice,
@@ -13,6 +13,7 @@ import PaymentMethodModal from "./PaymentMethodModal";
 import useCreateCheckout from "@/services/order/useCreateCheckoutOrder";
 import { formatRupiah, roundToThousand } from "@/utils";
 import { toast } from "react-toastify";
+import { clearCart } from "@/libs/store/slices/cartSlice";
 import { CheckoutPayload } from "../_utils/checkout-schema";
 
 interface CheckoutButtonProps {
@@ -33,6 +34,8 @@ export default function CheckoutButton({
   const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentMethodId, setPaymentMethodId] = useState("");
+
+  const dispatch = useAppDispatch();
 
   // Load Midtrans Snap script
   useEffect(() => {
@@ -65,6 +68,12 @@ export default function CheckoutButton({
             onSuccess: function (result: any) {
               console.log("Payment success:", result);
               toast.success("Pembayaran berhasil!");
+              // clear cart only after real payment success for non-tunai
+              try {
+                dispatch(clearCart());
+              } catch (e) {
+                console.warn("Failed to clear cart after payment success", e);
+              }
               // Navigate to tracking order after successful payment
               router.push(`/food-beverage/cart/${response.data.order.uuid}`);
             },
@@ -88,7 +97,12 @@ export default function CheckoutButton({
           toast.error("Midtrans Snap belum dimuat. Silakan coba lagi.");
         }
       } else {
-        // For cash or charge to room - go to tracking order directly
+        // For cash or charge to room - clear cart then go to tracking order
+        try {
+          dispatch(clearCart());
+        } catch (e) {
+          console.warn("Failed to clear cart after checkout success", e);
+        }
         router.push(`/food-beverage/cart/${response.data.order.uuid}`);
       }
     },

@@ -2,7 +2,9 @@
 
 import { Modifier } from "@/libs/types/cart/cart";
 import { Box, Typography, IconButton, Button } from "@mui/material";
-import { Edit, Minus, Plus } from "lucide-react";
+import { Edit, Minus, Plus, Trash2 } from "lucide-react";
+import { useAppDispatch } from "@/libs/hooks/useRedux";
+import { removeMenuFromCart } from "@/libs/store/slices/cartSlice";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
 
@@ -34,6 +36,7 @@ export default function OrderCard({
   onDecrement,
 }: OrderCardProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const formatPrice = (price: number) => {
     return `Rp${price.toLocaleString("id-ID")}`;
@@ -188,29 +191,50 @@ export default function OrderCard({
             gap: 1,
           }}
         >
-          <IconButton
-            onClick={onDecrement}
-            disabled={quantity <= 1}
-            sx={{
-              width: 28,
-              height: 28,
-              padding: 0,
-              borderRadius: "50%",
-              border: "1px solid #4F3534",
-              backgroundColor: "white",
-              color: "#6B7280",
-              "&:hover": {
-                backgroundColor: "#F9FAFB",
-                borderColor: "#D1D5DB",
-              },
-              "&:disabled": {
-                opacity: 0.5,
-                borderColor: "#E5E7EB",
-              },
-            }}
-          >
-            <Minus size={20} strokeWidth={2.5} />
-          </IconButton>
+          {quantity > 1 ? (
+            <IconButton
+              onClick={onDecrement}
+              disabled={quantity <= 1}
+              sx={{
+                width: 28,
+                height: 28,
+                padding: 0,
+                borderRadius: "50%",
+                border: "1px solid #4F3534",
+                backgroundColor: "white",
+                color: "#6B7280",
+                "&:hover": {
+                  backgroundColor: "#F9FAFB",
+                  borderColor: "#D1D5DB",
+                },
+                "&:disabled": {
+                  opacity: 0.5,
+                  borderColor: "#E5E7EB",
+                },
+              }}
+            >
+              <Minus size={20} strokeWidth={2.5} />
+            </IconButton>
+          ) : (
+            <IconButton
+              onClick={() => dispatch(removeMenuFromCart(index))}
+              sx={{
+                width: 28,
+                height: 28,
+                padding: 0,
+                borderRadius: "50%",
+                border: "1px solid #F87171",
+                backgroundColor: "white",
+                color: "#DC2626",
+                "&:hover": {
+                  backgroundColor: "rgba(220, 38, 38, 0.06)",
+                  borderColor: "#FCA5A5",
+                },
+              }}
+            >
+              <Trash2 size={18} strokeWidth={1.8} />
+            </IconButton>
+          )}
 
           <Typography
             sx={{
