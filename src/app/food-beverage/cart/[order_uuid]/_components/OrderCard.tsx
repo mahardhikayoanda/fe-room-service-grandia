@@ -85,7 +85,7 @@ export default function OrderCard({ item }: OrderCardProps) {
                   color: "#666",
                 }}
               >
-                <span style={{ fontWeight: 500 }}>Notes:</span> {item.remark}
+                <span style={{ fontWeight: 700 }}>Notes:</span> {item.remark}
               </Typography>
             )}
           </Box>

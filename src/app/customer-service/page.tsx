@@ -19,6 +19,7 @@ import {
 } from "./_utils/customer-service-schema";
 import { maxFileSize } from "@/constants";
 import { useRoom } from "@/providers/RoomProvider";
+import { CustomerServiceType } from "@/types/customer-service.type";
 
 export default function CustomerServicePage() {
   const router = useRouter();
@@ -44,9 +45,9 @@ export default function CustomerServicePage() {
 
   const onSubmit = (data: CustomerServiceFormType) => {
     mutate(data, {
-      onSuccess: () => {
+      onSuccess: (response: CustomerServiceType) => {
         reset();
-        router.push("/customer-service/complaint");
+        router.push(`/customer-service/${response.data.uuid}`);
       },
     });
   };
@@ -65,7 +66,7 @@ export default function CustomerServicePage() {
         {/* Header */}
         <BackHeader
           title="Customer Service"
-          subTitle="Complaint/request from room 120"
+          subTitle={`Complaint or request for ${roomData?.room_number || "----"}`}
         />
       </div>
 

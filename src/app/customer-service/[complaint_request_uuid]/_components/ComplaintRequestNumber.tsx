@@ -6,12 +6,12 @@ import { useState } from "react";
 
 interface ComplaintRequestInfoNumberProps {
   ComplaintRequestNumber: string;
-  orderTime: string;
+  ComplaintRequestTime: string;
 }
 
 export default function ComplaintRequestNumber({
   ComplaintRequestNumber,
-  orderTime,
+  ComplaintRequestTime,
 }: ComplaintRequestInfoNumberProps) {
   const [copied, setCopied] = useState(false);
 
@@ -28,25 +28,35 @@ export default function ComplaintRequestNumber({
   return (
     <Box sx={{ mb: 3, mt: 2 }}>
       {/* ComplaintRequest Number */}
+      <Typography
+        variant="h2"
+        sx={{
+          fontSize: "16px",
+          fontWeight: 700,
+          mb: 0.5,
+          color: "#000",
+        }}
+      >
+        Complaint or Request Information
+      </Typography>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mb: 2,
+          mb: 0.5,
         }}
       >
         <Typography
           variant="h6"
           sx={{
-            fontSize: "16px",
-            fontWeight: 700,
-            color: "#000",
+            fontSize: "14px",
+            fontWeight: 400,
+            color: "#7F7F7F",
           }}
         >
-          Complaint/Request No.
+          Number
         </Typography>
-
         <Box
           sx={{
             display: "flex",
@@ -99,7 +109,7 @@ export default function ComplaintRequestNumber({
               color: "#7F7F7F",
             }}
           >
-            Complaint/Request time
+            Time
           </Typography>
         </Box>
 
@@ -113,7 +123,7 @@ export default function ComplaintRequestNumber({
               textAlign: "right",
             }}
           >
-            {orderTime}
+            {ComplaintRequestTime}
           </Typography>
         </Box>
       </Box>

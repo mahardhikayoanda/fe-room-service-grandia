@@ -20,7 +20,7 @@ export const useQRVerification = () => useContext(QRContext);
 const PUBLIC_PATHS = [
   "/qr-verify",
   "/food-beverage/cart/", // Tracking order page (dynamic route)
-  "/customer-service/complaint", // Tracking complaint page
+  "/customer-service/", // Tracking complaint page (dynamic route)
 ];
 
 export function QRVerificationProvider({

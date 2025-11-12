@@ -3,17 +3,25 @@
 import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
 import { useRouter } from "nextjs-toploader/app";
-import React from "react";
+import React, { use } from "react";
 import ComplaintRequestRoomInfo from "./_components/ComplaintRequestRoomInfo";
 import ComplaintRequestStatus from "./_components/ComplaintRequestStatus";
 import ComplaintRequestMainInfo from "./_components/ComplaintRequestMainInfo";
 import { Box, Button, Divider } from "@mui/material";
 import ComplaintRequestNumber from "./_components/ComplaintRequestNumber";
 import BackNavigationConfirm from "@/app/food-beverage/cart/[order_uuid]/_components/BackNavigationConfirm";
+import useGetComplaintRequest from "@/services/customer-service/useGetRequestComplain";
 
-export default function TrackingComplaintRequestPage() {
+export default function TrackingComplaintRequestPage({
+  params,
+}: {
+  params: Promise<{ complaint_request_uuid: string }>;
+}) {
+  const { complaint_request_uuid } = use(params);
   const isScrolled = useScrolled(5);
   const router = useRouter();
+
+  const { data, isLoading } = useGetComplaintRequest(complaint_request_uuid);
 
   // Local state
   const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
@@ -55,8 +63,8 @@ export default function TrackingComplaintRequestPage() {
         className={`sticky top-0 z-10 flex flex-col gap-3 bg-white px-6 pt-4 pb-4 transition-shadow duration-150 ease-in-out ${isScrolled ? "shadow-md" : "shadow-none"}`}
       >
         <BackHeader
-          title="Complaint/Request Submitted"
-          subTitle="#25012421320"
+          title="Complaint or Request Submitted"
+          subTitle={data?.report_number || "----"}
           withoutBackButton
         />
       </div>
@@ -66,30 +74,23 @@ export default function TrackingComplaintRequestPage() {
         <div className="w-full px-6">
           {/* Complaint Room Info */}
           <ComplaintRequestRoomInfo
-            roomNumber={"120"}
-            roomType={"Deluxe Suite"}
-            floor={"3rd floor"}
+            roomNumber={data?.room?.room_number || "----"}
+            roomType={data?.room?.room_type?.name || "----"}
+            floor={data?.room?.location || "----"}
           />
 
           {/* Complaint Information */}
           <ComplaintRequestMainInfo
-            remark={
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            }
-            imageList={[
-              {
-                uuid: "1",
-                src: "/images/customer_service/pict-cs.png",
+            remark={data?.remark || "No additional information provided."}
+            imageList={(data?.car_images || []).map((item) => ({
+              photo: {
+                uuid: (item.photo as any)?.uuid ?? "",
+                src:
+                  (item.photo as any)?.src ??
+                  (item.photo as any)?.url ??
+                  `/api/files/${(item.photo as any)?.uuid ?? ""}`,
               },
-              {
-                uuid: "2",
-                src: "/images/customer_service/pict-cs.png",
-              },
-              {
-                uuid: "3",
-                src: "/images/customer_service/pict-cs.png",
-              },
-            ]}
+            }))}
           />
 
           <Divider
@@ -101,37 +102,7 @@ export default function TrackingComplaintRequestPage() {
 
           {/* Complaint Request Status */}
           <ComplaintRequestStatus
-            statusItems={[
-              {
-                id: "1",
-                title: "Order Received",
-                timestamp: "07-07-2025 09:15",
-                isCompleted: true,
-                icon: "order_received",
-              },
-              {
-                id: "2",
-                title: "Message Read",
-                timestamp: "07-07-2025 09:10",
-                isCompleted: true,
-                icon: "message_read",
-              },
-              {
-                id: "3",
-                title: "Processed",
-                timestamp: "07-07-2025 09:15",
-                isCompleted: false,
-                icon: "processed",
-              },
-              {
-                id: "4",
-                title: "Finished",
-                timestamp: "07-07-2025 09:15",
-                isCompleted: false,
-                icon: "finished",
-              },
-            ]}
-            estimatedDelivery="10:58 PM"
+            statusTrackers={data?.car_status_trackers || []}
           />
         </div>
       </section>
@@ -140,8 +111,8 @@ export default function TrackingComplaintRequestPage() {
         <div className="w-full px-6">
           {/* Complaint Request Number */}
           <ComplaintRequestNumber
-            ComplaintRequestNumber="#25012421320"
-            orderTime="07-07-2025 09:15"
+            ComplaintRequestNumber={data?.report_number || "----"}
+            ComplaintRequestTime={data?.created_at || "----"}
           />
         </div>
       </section>

@@ -87,7 +87,7 @@ export default function OrderCard({
                     color: "#666",
                   }}
                 >
-                  <span style={{ fontWeight: 500 }}>{modifier.name}:</span>{" "}
+                  <span style={{ fontWeight: 700 }}>{modifier.name}:</span>{" "}
                   {modifier.modifier_items.map((opt) => opt.name).join(", ")}
                 </Typography>
               ))}
@@ -99,7 +99,7 @@ export default function OrderCard({
                   color: "#666",
                 }}
               >
-                <span style={{ fontWeight: 500 }}>Notes:</span> {notes}
+                <span style={{ fontWeight: 700 }}>Notes:</span> {notes}
               </Typography>
             )}
           </Box>

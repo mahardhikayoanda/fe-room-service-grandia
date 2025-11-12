@@ -25,7 +25,7 @@ export default function ComplaintRequestRoomInfo({
           color: "#000",
         }}
       >
-        Complaint/Request Information
+        Complaint or Request Details
       </Typography>
       <Typography
         variant="body1"

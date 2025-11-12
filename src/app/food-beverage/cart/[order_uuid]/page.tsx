@@ -4,12 +4,6 @@ import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
 import React, { use } from "react";
 import { Box, Button, Typography, Divider, Grid } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@/libs/hooks/useRedux";
-import {
-  selectSelectedMenus,
-  selectCartItemCount,
-  selectCartTotalPrice,
-} from "@/libs/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import DeliveryRoomInfo from "./_components/DeliveryRoomInfo";
@@ -18,7 +12,6 @@ import BackNavigationConfirm from "./_components/BackNavigationConfirm";
 import OrderCard from "./_components/OrderCard";
 import OrderInfoNumber from "./_components/OrderInfoNumber";
 import useGetOrder from "@/services/order/useGetOrder";
-import { useRoom } from "@/providers/RoomProvider";
 import { formatRupiah } from "@/utils";
 
 export default function TrackingOrderPage({
@@ -27,7 +20,6 @@ export default function TrackingOrderPage({
   params: Promise<{ order_uuid: string }>;
 }) {
   const { order_uuid } = use(params);
-  const { roomData } = useRoom();
   const isScrolled = useScrolled(5);
   const router = useRouter();
 
