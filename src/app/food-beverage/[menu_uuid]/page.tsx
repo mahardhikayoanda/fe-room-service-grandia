@@ -1,9 +1,14 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import { useAppDispatch } from "@/libs/hooks/useRedux";
 import { addMenuToCart } from "@/libs/store/slices/cartSlice";
+import { useAppSelector } from "@/libs/hooks/useRedux";
+import {
+  selectSelectedMenus,
+  updateMenuInCart,
+} from "@/libs/store/slices/cartSlice";
 import MenuHeader from "./_components/MenuHeader";
 import ModifierSection from "./_components/ModifierSection";
 import NotesInput from "./_components/NotesInput";
@@ -11,62 +16,7 @@ import QuantitySelector from "./_components/QuantitySelector";
 import ModifierItemSkeleton from "./_components/ModifierItemSkeleton";
 import { useRouter } from "nextjs-toploader/app";
 import useGetProduct from "@/services/food-beverage/useGetProduct";
-
-// Mock data - sesuaikan dengan data real Anda
-// const menuData = {
-//   uuid: "1",
-//   name: "Avocado Toast with egg",
-//   description:
-//     "Avocado Toast with Egg: Begin by toasting your favorite bread, then top it with creamy avocado and a perfectly...",
-//   price: 24000,
-//   is_available: true,
-//   is_recommended: true,
-//   is_best_seller: false,
-//   sold_count: 150,
-//   image: {
-//     uuid: "img1",
-//     url: "https://indomie.wangun.co/storage/file/2025-11-06/kgZoCKKDXjIurrlnXHRhxBGyL.jpg",
-//   },
-// };
-
-// const modifierOptions = [
-//   {
-//     uuid: "01",
-//     name: "Pilihan Telor",
-//     is_required: true,
-//     can_choose_multiple: false,
-//     modifier_items: [
-//       {
-//         uuid: "001",
-//         name: "Matang",
-//       },
-//       {
-//         uuid: "002",
-//         name: "Setengah Matang",
-//       },
-//     ],
-//   },
-//   {
-//     uuid: "02",
-//     name: "Pilihan Saus",
-//     is_required: false,
-//     can_choose_multiple: true,
-//     modifier_items: [
-//       {
-//         uuid: "001",
-//         name: "Saus mentai",
-//       },
-//       {
-//         uuid: "002",
-//         name: "Saus ABC",
-//       },
-//       {
-//         uuid: "003",
-//         name: "Mayonase",
-//       },
-//     ],
-//   },
-// ];
+import { useSearchParams } from "next/navigation";
 
 export default function ModifierItemPage({
   params,
@@ -75,6 +25,8 @@ export default function ModifierItemPage({
 }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const selectedMenus = useAppSelector(selectSelectedMenus);
 
   const { menu_uuid } = use(params);
 
@@ -88,6 +40,12 @@ export default function ModifierItemPage({
   >({});
   const [notes, setNotes] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  // Determine if we're editing an existing cart item
+  const editIndexParam = searchParams?.get("editIndex");
+  const editIndex = editIndexParam ? parseInt(editIndexParam, 10) : undefined;
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editGlobalIndex, setEditGlobalIndex] = useState<number | null>(null);
 
   const handleModifierChange = (
     modifierUuid: string,
@@ -126,7 +84,11 @@ export default function ModifierItemPage({
     };
 
     // Dispatch to Redux store
-    dispatch(addMenuToCart(menuToAdd));
+    if (isEditMode && editGlobalIndex !== null && editGlobalIndex >= 0) {
+      dispatch(updateMenuInCart({ index: editGlobalIndex, menu: menuToAdd }));
+    } else {
+      dispatch(addMenuToCart(menuToAdd));
+    }
 
     // Optional: Reset form or navigate to cart
     router.back();
@@ -141,6 +103,47 @@ export default function ModifierItemPage({
       setQuantity((prev) => prev - 1);
     }
   };
+  // Initialize form when editing
+  useEffect(() => {
+    if (!menuData) return;
+
+    if (typeof editIndex === "number" && !isNaN(editIndex)) {
+      // Find all selected menus with same uuid
+      const sameMenus = selectedMenus.filter((m) => m.uuid === menuData.uuid);
+      if (editIndex >= 0 && editIndex < sameMenus.length) {
+        const target = sameMenus[editIndex];
+
+        // Build selectedModifiers from target.modifiers
+        const initialModifiers: Record<string, string[]> = {};
+        target.modifiers.forEach((mod) => {
+          initialModifiers[mod.uuid] = mod.modifier_items.map((o) => o.uuid);
+        });
+
+        setSelectedModifiers(initialModifiers);
+        setNotes(target.notes || "");
+        setQuantity(target.quantity || 1);
+
+        // Compute global index in selectedMenus
+        let count = -1;
+        let globalIdx: number | null = null;
+        for (let i = 0; i < selectedMenus.length; i++) {
+          if (selectedMenus[i].uuid === menuData.uuid) {
+            count += 1;
+            if (count === editIndex) {
+              globalIdx = i;
+              break;
+            }
+          }
+        }
+
+        if (globalIdx !== null) {
+          setEditGlobalIndex(globalIdx);
+          setIsEditMode(true);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuData, editIndex, selectedMenus]);
 
   // Show loading skeleton while data is being fetched
   if (isLoading || !menuData) {

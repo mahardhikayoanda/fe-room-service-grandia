@@ -4,8 +4,11 @@ import { Modifier } from "@/libs/types/cart/cart";
 import { Box, Typography, IconButton, Button } from "@mui/material";
 import { Edit, Minus, Plus } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "nextjs-toploader/app";
 
 interface OrderCardProps {
+  menuIndex: number;
+  menuUuid: string;
   title: string;
   image: string;
   modifierChoices?: Modifier[];
@@ -18,6 +21,8 @@ interface OrderCardProps {
 }
 
 export default function OrderCard({
+  menuIndex: index,
+  menuUuid,
   title,
   image,
   modifierChoices,
@@ -28,6 +33,8 @@ export default function OrderCard({
   onIncrement,
   onDecrement,
 }: OrderCardProps) {
+  const router = useRouter();
+
   const formatPrice = (price: number) => {
     return `Rp${price.toLocaleString("id-ID")}`;
   };
@@ -137,7 +144,9 @@ export default function OrderCard({
       >
         {/* Left:Edit Button */}
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            router.push(`/food-beverage/${menuUuid}?editIndex=${index}`);
+          }}
           variant="outlined"
           sx={{
             minWidth: "90px",

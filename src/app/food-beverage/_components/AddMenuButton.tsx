@@ -1,7 +1,7 @@
 "use client";
 
 import { Typography, Button, Box, Divider, IconButton } from "@mui/material";
-import { Edit, Minus, Plus } from "lucide-react";
+import { Edit, Minus, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { useAppSelector, useAppDispatch } from "@/libs/hooks/useRedux";
 import {
@@ -76,7 +76,7 @@ export default function AddMenuButton({
       const currentItem = selectedMenus[cartIndex];
 
       if (currentItem.quantity === 1) {
-        // Remove item if quantity becomes 0
+        // If quantity is 1, remove the item from cart (delete)
         dispatch(removeMenuFromCart(cartIndex));
 
         // Close drawer if no more items for this menu
@@ -90,6 +90,19 @@ export default function AddMenuButton({
             quantity: currentItem.quantity - 1,
           })
         );
+      }
+    }
+  };
+
+  // Remove entire menu item (used by trash button)
+  const handleRemoveMenu = (localIndex: number) => {
+    const cartIndex = getCartIndex(localIndex);
+    if (cartIndex !== -1) {
+      dispatch(removeMenuFromCart(cartIndex));
+
+      // Close drawer if that was the last item
+      if (currentMenuItems.length === 1) {
+        setOpenModifierSheet(false);
       }
     }
   };
@@ -242,7 +255,7 @@ export default function AddMenuButton({
                 <Button
                   onClick={() => {
                     router.push(
-                      `/food-beverage/${menuUuid}&editIndex=${index}`
+                      `/food-beverage/${menuUuid}?editIndex=${index}`
                     );
                   }}
                   variant="outlined"
@@ -289,30 +302,46 @@ export default function AddMenuButton({
                     gap: 2,
                   }}
                 >
-                  {/* Decrease Button */}
-                  <IconButton
-                    onClick={() => handleDecreaseQuantity(index)}
-                    disabled={item.quantity <= 1}
-                    sx={{
-                      width: 28,
-                      height: 28,
-                      padding: 0,
-                      borderRadius: "50%",
-                      border: "1px solid #4F3534",
-                      backgroundColor: "white",
-                      color: "#6B7280",
-                      "&:hover": {
-                        backgroundColor: "#F9FAFB",
-                        borderColor: "#D1D5DB",
-                      },
-                      "&:disabled": {
-                        opacity: 0.5,
-                        borderColor: "#E5E7EB",
-                      },
-                    }}
-                  >
-                    <Minus size={20} strokeWidth={2.5} />
-                  </IconButton>
+                  {/* Decrease or Delete Button */}
+                  {item.quantity > 1 ? (
+                    <IconButton
+                      onClick={() => handleDecreaseQuantity(index)}
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        padding: 0,
+                        borderRadius: "50%",
+                        border: "1px solid #4F3534",
+                        backgroundColor: "white",
+                        color: "#6B7280",
+                        "&:hover": {
+                          backgroundColor: "#F9FAFB",
+                          borderColor: "#D1D5DB",
+                        },
+                      }}
+                    >
+                      <Minus size={20} strokeWidth={2.5} />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => handleRemoveMenu(index)}
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        padding: 0,
+                        borderRadius: "50%",
+                        border: "1px solid #F87171",
+                        backgroundColor: "white",
+                        color: "#DC2626",
+                        "&:hover": {
+                          backgroundColor: "rgba(220, 38, 38, 0.06)",
+                          borderColor: "#FCA5A5",
+                        },
+                      }}
+                    >
+                      <Trash2 size={18} strokeWidth={1.8} />
+                    </IconButton>
+                  )}
 
                   {/* Quantity */}
                   <Typography
@@ -379,7 +408,7 @@ export default function AddMenuButton({
             "&:hover": { bgcolor: "#3d2a29" },
           }}
         >
-          Adjust the modifier
+          Add new modifier
         </Button>
       </SwipeableDrawerWrapper>
     </>

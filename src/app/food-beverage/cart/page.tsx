@@ -212,6 +212,8 @@ export default function ChartPage() {
                       style={{ overflow: "hidden" }}
                     >
                       <OrderCard
+                        menuIndex={index}
+                        menuUuid={menu.uuid}
                         title={menu.name}
                         image={menu.image}
                         modifierChoices={menu.modifiers}
