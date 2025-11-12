@@ -33,17 +33,29 @@ export default function OrderCard({ item }: OrderCardProps) {
       >
         {/* Left: Title and Details */}
         <Box sx={{ flex: 1 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: "16px",
-              fontWeight: 700,
-              color: "#000",
-              mb: 1,
-            }}
-          >
-            {item?.name}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: "16px",
+                fontWeight: 700,
+                color: "#000",
+              }}
+            >
+              {item?.name}
+            </Typography>
+            {/* {(item?.quantity ?? 0) > 1 && (
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#0F67B9",
+                }}
+              >
+                &nbsp; x {item?.quantity}
+              </Typography>
+            )} */}
+          </Box>
 
           {/* Choices */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>

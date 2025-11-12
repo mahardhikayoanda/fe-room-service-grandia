@@ -16,7 +16,6 @@ export default function TrackingComplaintRequestPage() {
   const router = useRouter();
 
   // Local state
-  const [showAll, setShowAll] = React.useState<boolean>(false);
   const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
 
   // Prevent browser back button
@@ -154,7 +153,7 @@ export default function TrackingComplaintRequestPage() {
           onClick={() => setShowBackConfirm(true)}
           sx={{
             bgcolor: "transparent",
-            color: "#4F3534",
+            color: "#191919",
             py: 1,
             borderRadius: 8,
             fontSize: "16px",
@@ -162,8 +161,10 @@ export default function TrackingComplaintRequestPage() {
             textTransform: "none",
             border: "1px solid #4F3534",
             "&:hover": {
-              bgcolor: "#F9FAFB",
-              borderColor: "#D1D5DB",
+              color: "#FFFFFF",
+              fontWeight: 500,
+              bgcolor: "#4F3534",
+              borderColor: "#4F3534",
             },
           }}
         >
@@ -173,6 +174,8 @@ export default function TrackingComplaintRequestPage() {
 
       {/* Back Navigation Confirmation */}
       <BackNavigationConfirm
+        title="Are you sure you want to leave this page?"
+        description="You can still check your complaint or request status from the WhatsApp link we've sent."
         open={showBackConfirm}
         onClose={handleCancelBack}
         onConfirm={handleConfirmBack}

@@ -16,6 +16,13 @@ const QRContext = createContext<QRContextType>({
 
 export const useQRVerification = () => useContext(QRContext);
 
+// Paths that don't require QR verification
+const PUBLIC_PATHS = [
+  "/qr-verify",
+  "/food-beverage/cart/", // Tracking order page (dynamic route)
+  "/customer-service/complaint", // Tracking complaint page
+];
+
 export function QRVerificationProvider({
   children,
 }: {
@@ -28,8 +35,10 @@ export function QRVerificationProvider({
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // Skip check for qr-verify page
-    if (pathname === "/qr-verify") {
+    // Skip check for public pages
+    const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+
+    if (isPublicPath) {
       setIsChecking(false);
       return;
     }
@@ -49,8 +58,12 @@ export function QRVerificationProvider({
     }
   }, [pathname, router]);
 
+  // Check if current path is public
+  const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+
   // Show nothing while checking (prevents flash of content)
-  if (isChecking && pathname !== "/qr-verify") {
+  // But allow public paths to show immediately
+  if (isChecking && !isPublicPath) {
     return null;
   }
 

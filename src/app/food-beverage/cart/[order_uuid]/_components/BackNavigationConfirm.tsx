@@ -5,12 +5,16 @@ import SwipeableDrawerWrapper from "@/components/SwipeableDrawerWrapper";
 import { AlertCircle } from "lucide-react";
 
 interface BackNavigationConfirmProps {
+  title: string;
+  description: string;
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
 }
 
 export default function BackNavigationConfirm({
+  title,
+  description,
   open,
   onClose,
   onConfirm,
@@ -60,7 +64,7 @@ export default function BackNavigationConfirm({
             textAlign: "center",
           }}
         >
-          Leave Order Tracking?
+          {title}
         </Typography>
 
         {/* Description */}
@@ -73,8 +77,7 @@ export default function BackNavigationConfirm({
             lineHeight: 1.5,
           }}
         >
-          Are you sure you want to leave this page? You can always track your
-          order from the order history.
+          {description}
         </Typography>
 
         {/* Buttons */}

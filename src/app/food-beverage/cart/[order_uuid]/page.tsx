@@ -90,9 +90,11 @@ export default function TrackingOrderPage({
       <section className="flex flex-col items-center justify-center bg-white mt-1">
         <div className="w-full px-6">
           <DeliveryRoomInfo
-            roomNumber={roomData?.room_number || "----"}
-            roomType={roomData?.room_type.name || "----"}
-            floor={roomData?.location || "----"}
+            name={data?.name || "----"}
+            phoneNumber={data?.phone_number || "----"}
+            roomNumber={data?.room?.room_number || "----"}
+            roomType={data?.room?.room_type.name || "----"}
+            floor={data?.room?.location || "----"}
           />
 
           {/* Order Status */}
@@ -235,53 +237,6 @@ export default function TrackingOrderPage({
           )}
 
           {/* Summary Payment*/}
-          {/* <Divider sx={{ mb: 2, borderColor: "#E5E7EB" }} /> */}
-          {/* <div className="flex justify-between items-center text-[#7F7F7F]">
-            <Typography
-              sx={{
-                fontSize: "14px",
-                fontWeight: 400,
-                color: "#7F7F7F",
-                mb: 0.5,
-              }}
-            >
-              Total item
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                fontWeight: 400,
-                color: "#7F7F7F",
-                mb: 0.5,
-              }}
-            >
-              {(data?.total_item_count ?? 0) > 1
-                ? `${data?.total_item_count ?? 0} items`
-                : `${data?.total_item_count ?? 0} item`}
-            </Typography>
-          </div> */}
-          {/* <div className="flex justify-between items-center text-[#7F7F7F]">
-            <Typography
-              sx={{
-                fontSize: "14px",
-                fontWeight: 400,
-                color: "#7F7F7F",
-                mb: 0.5,
-              }}
-            >
-              Price
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                fontWeight: 400,
-                color: "#7F7F7F",
-                mb: 0.5,
-              }}
-            >
-              Rp{totalPrice.toFixed(2)}
-            </Typography>
-          </div> */}
           <Divider sx={{ mb: 2, borderColor: "#E5E7EB" }} />
           <div className="w-full flex justify-end pb-4">
             <Typography
@@ -329,7 +284,7 @@ export default function TrackingOrderPage({
           onClick={() => setShowBackConfirm(true)}
           sx={{
             bgcolor: "transparent",
-            color: "#4F3534",
+            color: "#191919",
             py: 1,
             borderRadius: 8,
             fontSize: "16px",
@@ -337,8 +292,10 @@ export default function TrackingOrderPage({
             textTransform: "none",
             border: "1px solid #4F3534",
             "&:hover": {
-              bgcolor: "#F9FAFB",
-              borderColor: "#D1D5DB",
+              color: "#FFFFFF",
+              fontWeight: 500,
+              bgcolor: "#4F3534",
+              borderColor: "#4F3534",
             },
           }}
         >
@@ -348,6 +305,9 @@ export default function TrackingOrderPage({
 
       {/* Back Navigation Confirmation */}
       <BackNavigationConfirm
+        title="Are you sure you want to leave this page?"
+        description="You can still check your
+          order details from the WhatsApp link we've sent."
         open={showBackConfirm}
         onClose={handleCancelBack}
         onConfirm={handleConfirmBack}
