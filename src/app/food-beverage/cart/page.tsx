@@ -57,6 +57,8 @@ export default function ChartPage() {
 
   // Local state
   const [showAll, setShowAll] = React.useState<boolean>(false);
+  const [hasPendingPayment, setHasPendingPayment] =
+    React.useState<boolean>(false);
 
   // Calculate displayed menus
   const displayedMenus = showAll ? selectedMenus : selectedMenus.slice(0, 2);
@@ -132,7 +134,7 @@ export default function ChartPage() {
       <section className="flex flex-col items-center justify-center bg-white mt-1">
         <div className="w-full px-6">
           {roomData && <DeliveryRoomInfo roomData={roomData} />}
-          <PersonalInfoForm control={control} />
+          <PersonalInfoForm control={control} disabled={hasPendingPayment} />
         </div>
       </section>
 
@@ -157,12 +159,18 @@ export default function ChartPage() {
               <Button
                 variant="text"
                 onClick={handleAddMoreOrder}
+                disabled={hasPendingPayment}
                 sx={{
                   p: 0,
                   cursor: "pointer",
                   textTransform: "none",
                   px: 0.5,
                   py: 0,
+                  "&:disabled": {
+                    opacity: 0.5,
+                    borderColor: "#E5E7EB",
+                    cursor: "not-allowed",
+                  },
                 }}
               >
                 Tambah Pesanan
@@ -223,6 +231,7 @@ export default function ChartPage() {
                         onEdit={() => handleEdit(originalIndex)}
                         onIncrement={() => handleIncrement(originalIndex)}
                         onDecrement={() => handleDecrement(originalIndex)}
+                        disabled={hasPendingPayment}
                       />
                       {!isLastItem && (
                         <Divider
@@ -303,6 +312,7 @@ export default function ChartPage() {
         <CheckoutButton
           onBuildPayload={buildCheckoutPayload}
           isFormValid={isValid}
+          onPendingPaymentChange={setHasPendingPayment}
         />
       </section>
     </div>

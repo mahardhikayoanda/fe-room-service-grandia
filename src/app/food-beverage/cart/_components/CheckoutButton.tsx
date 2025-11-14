@@ -21,11 +21,13 @@ interface CheckoutButtonProps {
     paymentMethod: "cash" | "charge_to_room" | null
   ) => CheckoutPayload;
   isFormValid: boolean;
+  onPendingPaymentChange?: (hasPending: boolean) => void;
 }
 
 export default function CheckoutButton({
   onBuildPayload,
   isFormValid,
+  onPendingPaymentChange,
 }: CheckoutButtonProps) {
   const router = useRouter();
   const totalItems = useAppSelector(selectCartItemCount);
@@ -34,8 +36,36 @@ export default function CheckoutButton({
   const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentMethodId, setPaymentMethodId] = useState("");
+  const [pendingPayment, setPendingPayment] = useState<{
+    snap_token: string;
+    order_uuid: string;
+  } | null>(null);
 
   const dispatch = useAppDispatch();
+
+  // Check for pending payment on mount
+  useEffect(() => {
+    const pending = localStorage.getItem("pending_payment");
+    if (pending) {
+      try {
+        const data = JSON.parse(pending);
+        setPendingPayment(data);
+        if (onPendingPaymentChange) {
+          onPendingPaymentChange(true);
+        }
+      } catch (e) {
+        console.error("Failed to parse pending payment:", e);
+        localStorage.removeItem("pending_payment");
+      }
+    }
+  }, [onPendingPaymentChange]);
+
+  // Notify parent when pending payment changes
+  useEffect(() => {
+    if (onPendingPaymentChange) {
+      onPendingPaymentChange(!!pendingPayment);
+    }
+  }, [pendingPayment, onPendingPaymentChange]);
 
   // Load Midtrans Snap script
   useEffect(() => {
@@ -57,45 +87,19 @@ export default function CheckoutButton({
   const { mutate, isPending } = useCreateCheckout({
     onSuccess: (response) => {
       toast.success("Order berhasil dibuat!");
-      console.log("Checkout success:", response);
 
       // Navigate based on payment method
       if (paymentMethodId === "non-tunai" && response.data?.snap_token) {
-        // For Midtrans payment - open Snap UI
-        const snapInstance = (window as any).snap;
-        if (snapInstance) {
-          snapInstance.pay(response.data.snap_token, {
-            onSuccess: function (result: any) {
-              console.log("Payment success:", result);
-              toast.success("Pembayaran berhasil!");
-              // clear cart only after real payment success for non-tunai
-              try {
-                dispatch(clearCart());
-              } catch (e) {
-                console.warn("Failed to clear cart after payment success", e);
-              }
-              // Navigate to tracking order after successful payment
-              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
-            },
-            onPending: function (result: any) {
-              console.log("Payment pending:", result);
-              toast.info("Menunggu pembayaran...");
-              // Navigate to tracking order with pending status
-              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
-            },
-            onError: function (result: any) {
-              console.log("Payment error:", result);
-              toast.error("Pembayaran gagal!");
-            },
-            onClose: function () {
-              console.log("Payment popup closed");
-              // User closed the popup, navigate to tracking order
-              router.push(`/food-beverage/cart/${response.data.order.uuid}`);
-            },
-          });
-        } else {
-          toast.error("Midtrans Snap belum dimuat. Silakan coba lagi.");
-        }
+        // Save to localStorage for retry payment
+        const paymentData = {
+          snap_token: response.data.snap_token,
+          order_uuid: response.data.order.uuid,
+        };
+        localStorage.setItem("pending_payment", JSON.stringify(paymentData));
+        setPendingPayment(paymentData);
+
+        // Open Snap UI
+        openSnapPayment(response.data.snap_token, response.data.order.uuid);
       } else {
         // For cash or charge to room - clear cart then go to tracking order
         try {
@@ -112,6 +116,63 @@ export default function CheckoutButton({
       // Don't navigate on error
     },
   });
+
+  // Function to open Snap payment UI
+  const openSnapPayment = (snapToken: string, orderUuid: string) => {
+    const snapInstance = (window as any).snap;
+    if (snapInstance) {
+      snapInstance.pay(snapToken, {
+        onSuccess: function (result: any) {
+          console.log("Payment success:", result);
+          toast.success("Pembayaran berhasil!");
+
+          // Clear pending payment from localStorage
+          localStorage.removeItem("pending_payment");
+          setPendingPayment(null);
+
+          // clear cart only after real payment success for non-tunai
+          try {
+            dispatch(clearCart());
+          } catch (e) {
+            console.warn("Failed to clear cart after payment success", e);
+          }
+          // Navigate to tracking order after successful payment
+          router.push(`/food-beverage/cart/${orderUuid}`);
+        },
+        onPending: function (result: any) {
+          console.log("Payment pending:", result);
+          toast.info("Menunggu pembayaran...");
+          // Don't clear pending payment, user can retry
+        },
+        onError: function (result: any) {
+          console.log("Payment error:", result);
+          toast.error("Pembayaran gagal!");
+          // Don't clear pending payment, user can retry
+        },
+        onClose: function () {
+          console.log("Payment popup closed");
+          // Don't navigate, user can retry payment
+          toast.info("Anda dapat melanjutkan pembayaran kapan saja");
+        },
+      });
+    } else {
+      toast.error("Midtrans Snap belum dimuat. Silakan coba lagi.");
+    }
+  };
+
+  // Handle continue payment
+  const handleContinuePayment = () => {
+    if (pendingPayment) {
+      openSnapPayment(pendingPayment.snap_token, pendingPayment.order_uuid);
+    }
+  };
+
+  // Handle cancel pending payment
+  const handleCancelPendingPayment = () => {
+    localStorage.removeItem("pending_payment");
+    setPendingPayment(null);
+    toast.info("Pembayaran dibatalkan");
+  };
 
   // Don't show the button if cart is empty
   if (totalItems === 0) {
@@ -209,6 +270,7 @@ export default function CheckoutButton({
 
             <Button
               onClick={handlePaymentOptions}
+              disabled={!!pendingPayment}
               endIcon={<ChevronRight size={20} />}
               sx={{
                 textTransform: "none",
@@ -221,37 +283,117 @@ export default function CheckoutButton({
                   bgcolor: "transparent",
                   textDecoration: "underline",
                 },
+                "&:disabled": {
+                  color: "#999",
+                  cursor: "not-allowed",
+                },
               }}
             >
               Payment options
             </Button>
           </Box>
 
-          {/* Checkout Button */}
-          <Button
-            fullWidth
-            onClick={handleCheckout}
-            disabled={!paymentMethod || !isFormValid || isPending}
-            sx={{
-              bgcolor: "#4F3534",
-              color: "white",
-              py: 1,
-              borderRadius: 8,
-              fontSize: "16px",
-              fontWeight: 500,
-              textTransform: "none",
-              mb: 1,
-              "&:hover": {
+          {/* Pending Payment Alert */}
+          {pendingPayment && (
+            <Box
+              sx={{
+                mb: 2,
+                p: 1.5,
+                borderRadius: 2,
+                bgcolor: "#FEF3C7",
+                border: "1px solid #FCD34D",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#92400E",
+                  mb: 0.5,
+                }}
+              >
+                Pembayaran Belum Selesai
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  color: "#92400E",
+                }}
+              >
+                Anda memiliki pembayaran yang belum diselesaikan
+              </Typography>
+            </Box>
+          )}
+
+          {/* Checkout Button - Changes based on pending payment */}
+          {pendingPayment ? (
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                fullWidth
+                onClick={handleCancelPendingPayment}
+                sx={{
+                  bgcolor: "transparent",
+                  color: "#4F3534",
+                  py: 1,
+                  borderRadius: 8,
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  mb: 1,
+                  border: "1px solid #4F3534",
+                  "&:hover": {
+                    bgcolor: "rgba(79, 53, 52, 0.05)",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                fullWidth
+                onClick={handleContinuePayment}
+                sx={{
+                  bgcolor: "#4F3534",
+                  color: "white",
+                  py: 1,
+                  borderRadius: 8,
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  mb: 1,
+                  "&:hover": {
+                    bgcolor: "#3d2a29",
+                  },
+                }}
+              >
+                Continue Payment
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              fullWidth
+              onClick={handleCheckout}
+              disabled={!paymentMethod || !isFormValid || isPending}
+              sx={{
                 bgcolor: "#4F3534",
-              },
-              "&:disabled": {
-                bgcolor: "#E8E8E8",
-                color: "#999",
-              },
-            }}
-          >
-            {isPending ? "Processing..." : "Checkout order"}
-          </Button>
+                color: "white",
+                py: 1,
+                borderRadius: 8,
+                fontSize: "16px",
+                fontWeight: 500,
+                textTransform: "none",
+                mb: 1,
+                "&:hover": {
+                  bgcolor: "#4F3534",
+                },
+                "&:disabled": {
+                  bgcolor: "#E8E8E8",
+                  color: "#999",
+                },
+              }}
+            >
+              {isPending ? "Processing..." : "Checkout order"}
+            </Button>
+          )}
         </Box>
       </Box>
 

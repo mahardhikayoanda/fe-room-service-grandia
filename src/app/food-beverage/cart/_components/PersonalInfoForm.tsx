@@ -8,9 +8,13 @@ import { CheckoutFormType } from "../_utils/checkout-schema";
 
 interface PersonalInfoFormProps {
   control: Control<CheckoutFormType>;
+  disabled?: boolean;
 }
 
-export default function PersonalInfoForm({ control }: PersonalInfoFormProps) {
+export default function PersonalInfoForm({
+  control,
+  disabled,
+}: PersonalInfoFormProps) {
   return (
     <Box sx={{ mb: 3 }}>
       <Box
@@ -41,6 +45,7 @@ export default function PersonalInfoForm({ control }: PersonalInfoFormProps) {
           label="Full name"
           placeholder="Enter full name"
           required
+          disabled={disabled}
           startIcon={<User size={20} />}
         />
 
@@ -50,6 +55,7 @@ export default function PersonalInfoForm({ control }: PersonalInfoFormProps) {
           label="Phone Number"
           placeholder="Enter phone number"
           required
+          disabled={disabled}
           startIcon={<Phone size={20} />}
         />
       </Box>

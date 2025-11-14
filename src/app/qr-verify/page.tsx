@@ -51,7 +51,7 @@ export default function QRVerifyPage() {
         message: "Validating QR code...",
       });
 
-      const qrString = searchParams.get("qr");
+      const qrString = searchParams.get("qr_params");
       if (!qrString) {
         setState({
           step: "error",

@@ -20,6 +20,7 @@ interface OrderCardProps {
   onEdit?: () => void;
   onIncrement?: () => void;
   onDecrement?: () => void;
+  disabled?: boolean;
 }
 
 export default function OrderCard({
@@ -34,6 +35,7 @@ export default function OrderCard({
   onEdit,
   onIncrement,
   onDecrement,
+  disabled,
 }: OrderCardProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -151,6 +153,7 @@ export default function OrderCard({
             router.push(`/food-beverage/${menuUuid}?editIndex=${index}`);
           }}
           variant="outlined"
+          disabled={disabled}
           sx={{
             minWidth: "90px",
             display: "flex",
@@ -166,19 +169,28 @@ export default function OrderCard({
               backgroundColor: "grey.100",
               borderColor: "#4F3534",
             },
+            "&:disabled": {
+              opacity: 0.5,
+              borderColor: "#E5E7EB",
+              cursor: "not-allowed",
+            },
           }}
         >
           <Typography
             sx={{
               fontWeight: "bold",
-              color: "#4F3534",
+              color: disabled ? "#999" : "#4F3534",
               fontSize: "14px",
               display: "flex",
               alignItems: "center",
               gap: "4px",
             }}
           >
-            <Edit size={14} strokeWidth={2} color="#4F3534" />
+            <Edit
+              size={14}
+              strokeWidth={2}
+              color={disabled ? "#999" : "#4F3534"}
+            />
             Edit
           </Typography>
         </Button>
@@ -194,7 +206,7 @@ export default function OrderCard({
           {quantity > 1 ? (
             <IconButton
               onClick={onDecrement}
-              disabled={quantity <= 1}
+              disabled={quantity <= 1 || disabled}
               sx={{
                 width: 28,
                 height: 28,
@@ -218,6 +230,7 @@ export default function OrderCard({
           ) : (
             <IconButton
               onClick={() => dispatch(removeMenuFromCart(index))}
+              disabled={disabled}
               sx={{
                 width: 28,
                 height: 28,
@@ -229,6 +242,10 @@ export default function OrderCard({
                 "&:hover": {
                   backgroundColor: "rgba(220, 38, 38, 0.06)",
                   borderColor: "#FCA5A5",
+                },
+                "&:disabled": {
+                  opacity: 0.5,
+                  borderColor: "#E5E7EB",
                 },
               }}
             >
@@ -250,6 +267,7 @@ export default function OrderCard({
 
           <IconButton
             onClick={onIncrement}
+            disabled={disabled}
             sx={{
               width: 28,
               height: 28,
@@ -261,6 +279,10 @@ export default function OrderCard({
               "&:hover": {
                 backgroundColor: "#F9FAFB",
                 borderColor: "#D1D5DB",
+              },
+              "&:disabled": {
+                opacity: 0.5,
+                borderColor: "#E5E7EB",
               },
             }}
           >
