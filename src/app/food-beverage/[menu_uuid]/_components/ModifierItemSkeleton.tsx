@@ -4,7 +4,7 @@ import { Box, Skeleton } from "@mui/material";
 
 export default function ModifierItemSkeleton() {
   return (
-    <Box className="min-h-screen bg-[#F2F2F2] pb-0 relative">
+    <div className="w-sm border bg-[#F2F2F2] pb-0 relative">
       {/* Header Skeleton */}
       <Box sx={{ position: "relative" }}>
         {/* Image Skeleton */}
@@ -228,6 +228,6 @@ export default function ModifierItemSkeleton() {
           sx={{ borderRadius: "99px" }}
         />
       </Box>
-    </Box>
+    </div>
   );
 }
