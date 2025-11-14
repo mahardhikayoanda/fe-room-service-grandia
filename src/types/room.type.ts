@@ -1,3 +1,14 @@
+import { BasicRelationType, FileStorageType } from "./global";
+
+export interface RoomDataType {
+  uuid: string;
+  room_number: string;
+  location: string;
+  room_type: RoomCategoryType;
+  services: ServiceType[];
+  promos: PromoType[];
+}
+
 export interface RoomCategoryType {
   name: string;
 }
@@ -15,20 +26,20 @@ export interface PromoType {
   uuid: string;
   name: string;
   description: string;
-  discount_percentage?: number;
-  discount_amount?: number;
-  start_at: string;
-  finish_at: string;
-  is_available: number;
+  is_available: boolean;
+  promo_type: string;
+  promo_menu: BasicRelationType;
+  promo_product: BasicRelationType;
+  minimum_transaction: string;
+  discount_nominal: string;
+  discount_percentage: string;
+  group: GroupType;
+  photo: FileStorageType;
 }
 
-export interface RoomDataType {
-  uuid: string;
-  room_number: string;
-  location: string;
-  room_type: RoomCategoryType;
-  services: ServiceType[];
-  promos: PromoType[];
+export interface GroupType {
+  value: string;
+  label: string;
 }
 
 export interface RoomLoginResponse {
