@@ -113,7 +113,6 @@ export default function CheckoutButton({
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Checkout gagal!");
       console.error("Checkout error:", error);
-      // Don't navigate on error
     },
   });
 
@@ -124,7 +123,7 @@ export default function CheckoutButton({
       snapInstance.pay(snapToken, {
         onSuccess: function (result: any) {
           console.log("Payment success:", result);
-          toast.success("Pembayaran berhasil!");
+          toast.success("Payment successful!");
 
           // Clear pending payment from localStorage
           localStorage.removeItem("pending_payment");
@@ -141,12 +140,12 @@ export default function CheckoutButton({
         },
         onPending: function (result: any) {
           console.log("Payment pending:", result);
-          toast.info("Menunggu pembayaran...");
+          toast.info("Waiting for payment...");
           // Don't clear pending payment, user can retry
         },
         onError: function (result: any) {
           console.log("Payment error:", result);
-          toast.error("Pembayaran gagal!");
+          toast.error("Payment failed!");
           // Don't clear pending payment, user can retry
         },
         onClose: function () {
@@ -156,7 +155,7 @@ export default function CheckoutButton({
         },
       });
     } else {
-      toast.error("Midtrans Snap belum dimuat. Silakan coba lagi.");
+      toast.error("Midtrans Snap is not loaded yet. Please try again.");
     }
   };
 
@@ -183,7 +182,7 @@ export default function CheckoutButton({
 
   const handleCheckout = () => {
     if (!isFormValid) {
-      toast.error("Mohon lengkapi data diri terlebih dahulu");
+      toast.error("Please complete your personal data first");
       return;
     }
 

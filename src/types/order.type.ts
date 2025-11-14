@@ -10,6 +10,7 @@ export interface OrderDetailType {
   rounded_grand_total: string;
   ordered_at: string;
   payment_method: string;
+  snap_token?: string;
   room: RoomDetailType;
   order_details: MenuOrderType[];
   order_status_trackers: OrderStatusTrackerType[];

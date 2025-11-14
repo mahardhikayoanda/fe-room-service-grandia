@@ -2,7 +2,7 @@
 
 import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
-import React, { use } from "react";
+import React, { use, useEffect } from "react";
 import { Box, Button, Typography, Divider, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,6 +13,7 @@ import OrderCard from "./_components/OrderCard";
 import OrderInfoNumber from "./_components/OrderInfoNumber";
 import useGetOrder from "@/services/order/useGetOrder";
 import { formatRupiah } from "@/utils";
+import { toast } from "react-toastify";
 
 export default function TrackingOrderPage({
   params,
@@ -28,6 +29,76 @@ export default function TrackingOrderPage({
   // Local state
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const [showBackConfirm, setShowBackConfirm] = React.useState<boolean>(false);
+
+  // test token
+  const test_snap_token = "9369e074-a355-47b9-920e-c69175fb6a28";
+
+  // Load Midtrans Snap script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.setAttribute(
+      "data-client-key",
+      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
+    );
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  // Check if order has pending payment
+  const isWaitingPayment =
+    data?.order_status_trackers?.length === 1 &&
+    data?.order_status_trackers[0]?.status?.value === "waiting_payment";
+  // && data?.snap_token;
+
+  // Function to open Snap payment UI
+  const handleContinuePayment = () => {
+    if (!data?.snap_token) return;
+
+    const snapInstance = (window as any).snap;
+    if (snapInstance) {
+      snapInstance.pay(data.snap_token, {
+        onSuccess: function (result: any) {
+          console.log("Payment success:", result);
+          toast.success("Payment successful!");
+
+          // Clear pending payment from localStorage if it matches this order
+          const pending = localStorage.getItem("pending_payment");
+          if (pending) {
+            try {
+              const pendingData = JSON.parse(pending);
+              if (pendingData.order_uuid === order_uuid) {
+                localStorage.removeItem("pending_payment");
+              }
+            } catch (e) {
+              console.error("Failed to parse pending payment:", e);
+            }
+          }
+
+          // Refresh order data
+          window.location.reload();
+        },
+        onPending: function (result: any) {
+          console.log("Payment pending:", result);
+          toast.info("Waiting for payment...");
+        },
+        onError: function (result: any) {
+          console.log("Payment error:", result);
+          toast.error("Payment failed!");
+        },
+        onClose: function () {
+          console.log("Payment popup closed");
+          toast.info("You can continue the payment anytime");
+        },
+      });
+    } else {
+      toast.error("Midtrans Snap is not loaded yet. Please try again.");
+    }
+  };
 
   // Calculate displayed menus
   const displayedMenus = showAll
@@ -128,7 +199,7 @@ export default function TrackingOrderPage({
                   color: "#666",
                 }}
               >
-                <Typography>Belum ada pesanan</Typography>
+                <Typography>No orders yet</Typography>
               </Box>
             ) : (
               <AnimatePresence mode="sync">
@@ -271,6 +342,28 @@ export default function TrackingOrderPage({
 
       {/* Return to Main Menu Button */}
       <Box sx={{ mb: 3, mt: 2, px: 2 }}>
+        {isWaitingPayment ? (
+          <Button
+            fullWidth
+            onClick={handleContinuePayment}
+            sx={{
+              bgcolor: "#4F3534",
+              color: "white",
+              py: 1.5,
+              borderRadius: 8,
+              fontSize: "16px",
+              fontWeight: 600,
+              textTransform: "none",
+              mb: 1,
+              "&:hover": {
+                bgcolor: "#3d2a29",
+              },
+            }}
+          >
+            Continue Payment
+          </Button>
+        ) : null}
+
         <Button
           fullWidth
           onClick={() => setShowBackConfirm(true)}
