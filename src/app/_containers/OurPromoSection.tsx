@@ -5,8 +5,10 @@ import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import React from "react";
 import { useRoom } from "@/providers/RoomProvider";
+import { useRouter } from "nextjs-toploader/app";
 
 export default function OurPromoSection() {
+  const router = useRouter();
   const { roomData } = useRoom();
 
   return (
@@ -29,7 +31,14 @@ export default function OurPromoSection() {
           cssMode={false}
         >
           {roomData?.promos.map((promo) => (
-            <SwiperSlide key={promo.uuid}>
+            <SwiperSlide
+              key={promo.uuid}
+              onClick={() =>
+                promo.promo_product.uuid
+                  ? router.push(`/food-beverage/${promo.promo_product.uuid}`)
+                  : router.push(`/food-beverage`)
+              }
+            >
               <Image
                 src={promo.photo.url}
                 alt={promo.name ?? "Promo Image"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { Trophy, ThumbsUp } from "lucide-react";
 import AddMenuButton from "./AddMenuButton";
@@ -70,9 +70,35 @@ export default function MenuCard({ item, index, isLastItem }: MenuCardProps) {
         </div>
 
         <div className="flex justify-between items-center my-4">
-          <Typography sx={{ fontWeight: 700, color: "#000", fontSize: "16px" }}>
-            {formatRupiah(item.selling_price)}
-          </Typography>
+          {/* price */}
+          <Box>
+            {item.selling_price < item.base_price && (
+              <Typography
+                variant="body2"
+                className="px-1 py-0.5 rounded-sm text-red-700 bg-red-200 w-fit mb-0.5"
+                sx={{ fontSize: "10px", fontWeight: "bold" }}
+              >
+                Promo
+              </Typography>
+            )}
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: "#000",
+                fontSize: "16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              {formatRupiah(item.selling_price)}
+              {item.selling_price < item.base_price && (
+                <span className="line-through text-gray-500 mr-2 text-sm">
+                  {item.base_price}
+                </span>
+              )}
+            </Typography>
+          </Box>
 
           <AddMenuButton
             menuUuid={item.uuid}

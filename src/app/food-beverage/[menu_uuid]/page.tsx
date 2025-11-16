@@ -179,7 +179,8 @@ export default function ModifierItemPage({
         subtitle={menuData.description}
         image={menuData.image.url}
         isRecommended={menuData.is_recommended}
-        price={menuData.selling_price}
+        selling_price={menuData.selling_price}
+        base_price={menuData.base_price}
         isBestSeller={menuData.is_best_seller}
       />
 

@@ -13,7 +13,8 @@ interface MenuHeaderProps {
   image: string;
   isRecommended?: boolean;
   isBestSeller?: boolean;
-  price: number;
+  base_price: number;
+  selling_price: number;
 }
 
 export default function MenuHeader({
@@ -22,7 +23,8 @@ export default function MenuHeader({
   image,
   isRecommended = false,
   isBestSeller = false,
-  price,
+  base_price,
+  selling_price,
 }: MenuHeaderProps) {
   const router = useRouter();
 
@@ -67,14 +69,35 @@ export default function MenuHeader({
           </div>
         )}
         {subtitle && (
-          <Typography variant="body2" className="text-gray-600 mb-2">
+          <Typography variant="body2" className="text-gray-600 mb-3">
             {subtitle}
           </Typography>
         )}
 
-        <Box className="text-2xl font-bold text-gray-900">
-          {formatRupiah(price)}
-        </Box>
+        {selling_price < base_price && (
+          <Typography
+            variant="body2"
+            className="px-1 py-0.5 rounded-sm text-red-700 bg-red-200 w-fit"
+            sx={{ fontSize: "12px", fontWeight: "bold" }}
+          >
+            Promo
+          </Typography>
+        )}
+        <Typography
+          className="text-2xl font-bold text-gray-900"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}
+        >
+          {formatRupiah(selling_price)}
+          {selling_price < base_price && (
+            <span className="line-through text-gray-500 ml-2 text-sm">
+              {base_price}
+            </span>
+          )}
+        </Typography>
       </Box>
     </Box>
   );
