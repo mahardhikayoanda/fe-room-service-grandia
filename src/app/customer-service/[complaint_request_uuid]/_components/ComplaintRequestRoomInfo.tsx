@@ -4,12 +4,16 @@ import { Box, Divider, Paper, Typography } from "@mui/material";
 import { DoorOpen } from "lucide-react";
 
 interface DeliveryRoomInfoProps {
+  nameUser: string;
+  phoneUser: string;
   roomNumber: string;
   roomType: string;
   floor: string;
 }
 
 export default function ComplaintRequestRoomInfo({
+  nameUser,
+  phoneUser,
   roomNumber,
   roomType,
   floor,
@@ -36,7 +40,7 @@ export default function ComplaintRequestRoomInfo({
           color: "#4C4C4C",
         }}
       >
-        Bayu Imam Fauzan | 0895632317128
+        {nameUser} | {phoneUser}
       </Typography>
 
       <Paper

@@ -74,6 +74,8 @@ export default function TrackingComplaintRequestPage({
         <div className="w-full px-6">
           {/* Complaint Room Info */}
           <ComplaintRequestRoomInfo
+            nameUser={data?.name || "----"}
+            phoneUser={data?.phone_number || "----"}
             roomNumber={data?.room?.room_number || "----"}
             roomType={data?.room?.room_type?.name || "----"}
             floor={data?.room?.location || "----"}

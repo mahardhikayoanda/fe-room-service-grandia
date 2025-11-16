@@ -1,12 +1,38 @@
 import SwipeableDrawerWrapper from "@/components/SwipeableDrawerWrapper";
 import { Box, Divider, Typography } from "@mui/material";
 import { Home } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRoom } from "@/providers/RoomProvider";
+import { getQRString } from "@/utils/geolocation";
+import useCreateRoomLogin from "@/services/room/useCreateRoomLogin";
 
 export default function RoomInformation() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { roomData } = useRoom();
+  const { roomData, setRoomData } = useRoom();
+  const cachedQRString = getQRString();
+
+  const { mutate: verifyRoomQR, isPending } = useCreateRoomLogin();
+
+  useEffect(() => {
+    reloadRoom();
+  }, []);
+
+  const reloadRoom = async () => {
+    if (cachedQRString) {
+      verifyRoomQR(
+        { qr_string: cachedQRString },
+        {
+          onSuccess: (data) => {
+            console.log("Room verified successfully:", data);
+            setRoomData(data.data);
+          },
+          onError: (error) => {
+            console.error("Error verifying room QR:", error);
+          },
+        }
+      );
+    }
+  };
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);

@@ -7,6 +7,7 @@ import {
   Typography,
   IconButton,
   CircularProgress,
+  Dialog,
 } from "@mui/material";
 import { Upload, X, ImageIcon, AlertCircle } from "lucide-react";
 import type { Control, FieldValues, Path } from "react-hook-form";
@@ -38,6 +39,7 @@ const FileUploadInput = <T extends FieldValues>({
   const [previews, setPreviews] = useState<string[]>([]);
   const [errorDrawerOpen, setErrorDrawerOpen] = useState(false);
   const [errorMessageImage, setErrorMessageImage] = useState("");
+  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const { compressImages, isCompressing } = useImageCompressor();
 
   // Cleanup URLs on unmount
@@ -316,6 +318,7 @@ const FileUploadInput = <T extends FieldValues>({
           {previews.map((preview, index) => (
             <Box
               key={index}
+              onClick={() => setSelectedPreview(preview)}
               sx={{
                 position: "relative",
                 width: 100,
@@ -323,6 +326,7 @@ const FileUploadInput = <T extends FieldValues>({
                 borderRadius: 2,
                 overflow: "hidden",
                 border: "1px solid #E5E7EB",
+                cursor: "pointer",
               }}
             >
               <Box
@@ -336,7 +340,10 @@ const FileUploadInput = <T extends FieldValues>({
                 }}
               />
               <IconButton
-                onClick={() => handleRemoveFile(index, value, onChange)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFile(index, value, onChange);
+                }}
                 sx={{
                   position: "absolute",
                   top: 4,
@@ -430,6 +437,73 @@ const FileUploadInput = <T extends FieldValues>({
           </Button>
         </Box>
       </SwipeableDrawerWrapper>
+
+      {/* Image Preview Dialog (shows blob/object URLs as full preview) */}
+      <Dialog
+        open={selectedPreview !== null}
+        onClose={() => setSelectedPreview(null)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: "transparent",
+            boxShadow: "none",
+            overflow: "hidden",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "80vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <IconButton
+            onClick={() => setSelectedPreview(null)}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              bgcolor: "rgba(0, 0, 0, 0.6)",
+              color: "white",
+              zIndex: 1,
+              "&:hover": {
+                bgcolor: "rgba(0, 0, 0, 0.8)",
+              },
+            }}
+          >
+            <X size={24} />
+          </IconButton>
+
+          {selectedPreview && (
+            <Box
+              sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                component="img"
+                src={selectedPreview}
+                alt="Preview"
+                sx={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+          )}
+        </Box>
+      </Dialog>
     </Box>
   );
 

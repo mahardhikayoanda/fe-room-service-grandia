@@ -72,7 +72,6 @@ export default function CustomerServicePage() {
 
       {/* Form Container */}
       <Box
-        // component="form"
         onSubmit={handleSubmit((d) => onSubmit(d))}
         sx={{
           bgcolor: "white",
