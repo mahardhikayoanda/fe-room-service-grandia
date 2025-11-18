@@ -6,12 +6,14 @@ interface PaymentSummaryProps {
   totalItems: number;
   subtotal: number;
   discount?: number;
+  promoName?: string;
 }
 
 export default function PaymentSummary({
   totalItems,
   subtotal,
   discount = 0,
+  promoName,
 }: PaymentSummaryProps) {
   const totalPayment = subtotal - discount;
 
@@ -103,12 +105,13 @@ export default function PaymentSummary({
                 color: "#666",
               }}
             >
-              Discount
+              Discount {promoName && `(${promoName})`}
             </Typography>
             <Typography
               sx={{
                 fontSize: "14px",
                 color: "#EF4444",
+                fontWeight: 600,
               }}
             >
               -{formatPrice(discount)}

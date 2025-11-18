@@ -19,7 +19,7 @@ import PaymentSummary from "./_components/PaymentSummary";
 import CheckoutButton from "./_components/CheckoutButton";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRoom } from "@/providers/RoomProvider";
-import { roundToThousand } from "@/utils";
+import { roundToThousand, formatRupiah } from "@/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -28,6 +28,11 @@ import {
   CheckoutPayload,
   defaultCheckoutForm,
 } from "./_utils/checkout-schema";
+import {
+  findBestPromo,
+  calculateFinalPrice,
+  AppliedPromo,
+} from "./_utils/promo-calculator";
 
 export default function ChartPage() {
   const isScrolled = useScrolled(5);
@@ -59,6 +64,19 @@ export default function ChartPage() {
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const [hasPendingPayment, setHasPendingPayment] =
     React.useState<boolean>(false);
+  const [appliedPromo, setAppliedPromo] = React.useState<AppliedPromo | null>(
+    null
+  );
+
+  // promo minimum spend amount - auto-apply best promo
+  useEffect(() => {
+    if (roomData?.promos && totalPrice > 0) {
+      const bestPromo = findBestPromo(roomData.promos, totalPrice);
+      setAppliedPromo(bestPromo);
+    } else {
+      setAppliedPromo(null);
+    }
+  }, [totalPrice, roomData?.promos]);
 
   // Calculate displayed menus
   const displayedMenus = showAll ? selectedMenus : selectedMenus.slice(0, 2);
@@ -104,20 +122,22 @@ export default function ChartPage() {
       })),
     }));
 
-    const grandTotal = totalPrice;
-    const roundedGrandTotal = roundToThousand(grandTotal);
+    // Calculate final price with promo discount
+    const finalPrice = calculateFinalPrice(totalPrice, appliedPromo);
+    const discountAmount = appliedPromo?.discountAmount || 0;
+    const roundedGrandTotal = roundToThousand(finalPrice);
 
     return {
       room_uuid: roomUUID || "",
-      promo_uuid: "",
+      promo_uuid: appliedPromo?.promo.uuid || "",
       service_code: "fnb",
       name: formValues.name,
       phone_number: formValues.phone_number,
       payment_method: paymentMethod,
       order_items: orderItems,
-      grand_total: grandTotal,
+      grand_total: finalPrice,
       rounded_grand_total: roundedGrandTotal,
-      total_discount: 0,
+      total_discount: discountAmount,
     };
   };
 
@@ -304,7 +324,73 @@ export default function ChartPage() {
 
       {/* payment summary */}
       <section className="flex flex-col items-center justify-center bg-white mt-1 px-6">
-        <PaymentSummary totalItems={cartItemCount} subtotal={totalPrice} />
+        {/* Promo Badge - Show when promo is applied */}
+        {appliedPromo && (
+          <Box
+            sx={{
+              width: "100%",
+              mb: 2,
+              mt: 2,
+              p: 1.5,
+              borderRadius: 2,
+              bgcolor: "#ECFDF5",
+              border: "1px solid #10B981",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                bgcolor: "#10B981",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "16px",
+                  color: "white",
+                }}
+              >
+                🎉
+              </Typography>
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography
+                sx={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#065F46",
+                  mb: 0.25,
+                }}
+              >
+                Promo Applied!
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  color: "#065F46",
+                }}
+              >
+                {appliedPromo.promo.name} - Save{" "}
+                {formatRupiah(appliedPromo.discountAmount)}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+
+        <PaymentSummary
+          totalItems={cartItemCount}
+          subtotal={totalPrice}
+          discount={appliedPromo?.discountAmount || 0}
+          promoName={appliedPromo?.promo.name}
+        />
       </section>
 
       {/* button payment */}
@@ -313,6 +399,7 @@ export default function ChartPage() {
           onBuildPayload={buildCheckoutPayload}
           isFormValid={isValid}
           onPendingPaymentChange={setHasPendingPayment}
+          finalPrice={calculateFinalPrice(totalPrice, appliedPromo)}
         />
       </section>
     </div>

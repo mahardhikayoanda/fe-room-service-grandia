@@ -22,16 +22,21 @@ interface CheckoutButtonProps {
   ) => CheckoutPayload;
   isFormValid: boolean;
   onPendingPaymentChange?: (hasPending: boolean) => void;
+  finalPrice?: number;
 }
 
 export default function CheckoutButton({
   onBuildPayload,
   isFormValid,
   onPendingPaymentChange,
+  finalPrice,
 }: CheckoutButtonProps) {
   const router = useRouter();
   const totalItems = useAppSelector(selectCartItemCount);
   const totalPrice = useAppSelector(selectCartTotalPrice);
+
+  // Use finalPrice if provided, otherwise use totalPrice
+  const displayPrice = finalPrice !== undefined ? finalPrice : totalPrice;
 
   const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -178,7 +183,7 @@ export default function CheckoutButton({
     return null;
   }
 
-  const roundedTotal = roundToThousand(totalPrice);
+  const roundedTotal = roundToThousand(displayPrice);
 
   const handleCheckout = () => {
     if (!isFormValid) {
