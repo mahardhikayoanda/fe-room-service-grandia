@@ -54,5 +54,5 @@ export function formatRupiah(
  * @returns {number} The rounded value.
  */
 export function roundToThousand(value: number): number {
-  return Math.round(value / 1000) * 1000;
+  return Math.ceil(value / 1000) * 1000;
 }
