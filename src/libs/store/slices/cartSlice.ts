@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import type { CartState, SelectedMenu } from "@/libs/types/cart/cart";
+import {
+  CheckoutFormType,
+  defaultCheckoutForm,
+} from "@/app/food-beverage/cart/_utils/checkout-schema";
 
 // Initial State
 const initialState: CartState = {
@@ -16,6 +20,11 @@ export const cartSlice = createSlice({
     // Set room UUID
     setRoomUuid: (state, action: PayloadAction<string>) => {
       state.room_uuid = action.payload;
+    },
+
+    // Set cart personal info
+    setCartPersonalInfo: (state, action: PayloadAction<CheckoutFormType>) => {
+      state.cart_personal_info = action.payload;
     },
 
     // Add menu to cart
@@ -68,6 +77,7 @@ export const cartSlice = createSlice({
 // Actions
 export const {
   setRoomUuid,
+  setCartPersonalInfo,
   addMenuToCart,
   updateMenuInCart,
   removeMenuFromCart,
@@ -85,5 +95,7 @@ export const selectCartItemCount = (state: RootState) =>
   state.cart.selected_menus.reduce((total, menu) => total + menu.quantity, 0);
 export const selectCartTotalPrice = (state: RootState) =>
   state.cart.selected_menus.reduce((total, menu) => total + menu.totalPrice, 0);
+export const selectCartPersonalInfo = (state: RootState) =>
+  state.cart.cart_personal_info;
 
 export default cartSlice.reducer;

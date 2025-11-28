@@ -1,20 +1,48 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { Box, debounce, Typography } from "@mui/material";
 import { Info as InfoIcon, User, Phone } from "lucide-react";
-import { Control } from "react-hook-form";
+import {
+  Control,
+  UseFormSetValue,
+  UseFormWatch,
+  useWatch,
+} from "react-hook-form";
 import TextInput from "@/components/form/TextInput";
 import { CheckoutFormType } from "../_utils/checkout-schema";
+import { memo, useEffect, useMemo, useRef } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useAppDispatch, useAppSelector } from "@/libs/hooks/useRedux";
+import {
+  selectCartPersonalInfo,
+  setCartPersonalInfo,
+} from "@/libs/store/slices/cartSlice";
 
 interface PersonalInfoFormProps {
   control: Control<CheckoutFormType>;
   disabled?: boolean;
+  setValue: UseFormSetValue<CheckoutFormType>;
+  watch: UseFormWatch<CheckoutFormType>;
 }
 
-export default function PersonalInfoForm({
+function PersonalInfoForm({
   control,
   disabled,
+  setValue,
+  watch,
 }: PersonalInfoFormProps) {
+  const personalInfo = useAppSelector(selectCartPersonalInfo);
+
+  const isDirty = useRef(false);
+
+  useEffect(() => {
+    if (!isDirty.current) {
+      setValue("name", personalInfo?.name || "");
+      setValue("phone_number", personalInfo?.phone_number || "");
+      isDirty.current = false;
+    }
+  }, [personalInfo, setValue]);
+
   return (
     <Box sx={{ mb: 3 }}>
       <Box
@@ -62,3 +90,5 @@ export default function PersonalInfoForm({
     </Box>
   );
 }
+
+export default memo(PersonalInfoForm);

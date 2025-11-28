@@ -1,3 +1,5 @@
+import { CheckoutFormType } from "@/app/food-beverage/cart/_utils/checkout-schema";
+
 // Cart Types
 export interface ModifierOption {
   uuid: string;
@@ -24,6 +26,7 @@ export interface SelectedMenu {
 export interface CartState {
   room_uuid: string;
   selected_menus: SelectedMenu[];
+  cart_personal_info?: CheckoutFormType;
 }
 
 // Order payload for API

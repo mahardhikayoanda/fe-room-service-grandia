@@ -2,7 +2,7 @@
 
 import BackHeader from "@/components/BackHeader";
 import { useScrolled } from "@/libs/hooks/useScrolled";
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import DeliveryRoomInfo from "./_components/DeliveryRoomInfo";
 import PersonalInfoForm from "./_components/PersonalInfoForm";
 import OrderCard from "./_components/OrderCard";
@@ -13,6 +13,8 @@ import {
   selectCartItemCount,
   selectCartTotalPrice,
   updateMenuQuantity,
+  selectCartPersonalInfo,
+  setCartPersonalInfo,
 } from "@/libs/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import PaymentSummary from "./_components/PaymentSummary";
@@ -26,15 +28,15 @@ import {
   CheckoutFormSchema,
   CheckoutFormType,
   CheckoutPayload,
-  defaultCheckoutForm,
 } from "./_utils/checkout-schema";
 import {
   findBestPromo,
   calculateFinalPrice,
   AppliedPromo,
 } from "./_utils/promo-calculator";
+import { useDebounce } from "@uidotdev/usehooks";
 
-export default function ChartPage() {
+function ChartPage() {
   const isScrolled = useScrolled(5);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -44,14 +46,16 @@ export default function ChartPage() {
   const selectedMenus = useAppSelector(selectSelectedMenus);
   const cartItemCount = useAppSelector(selectCartItemCount);
   const totalPrice = useAppSelector(selectCartTotalPrice);
+  const cartPersonalInfo = useAppSelector(selectCartPersonalInfo);
 
   // React Hook Form
   const {
     control,
     watch,
     formState: { isValid },
+    setValue,
   } = useForm<CheckoutFormType>({
-    defaultValues: defaultCheckoutForm,
+    defaultValues: cartPersonalInfo,
     resolver: zodResolver(CheckoutFormSchema),
     mode: "onChange",
     reValidateMode: "onChange",
@@ -102,6 +106,18 @@ export default function ChartPage() {
   const handleAddMoreOrder = () => {
     router.push("/food-beverage");
   };
+
+  const name = watch("name");
+  const phoneNumber = watch("phone_number");
+
+  useEffect(() => {
+    dispatch(
+      setCartPersonalInfo({
+        name: name,
+        phone_number: phoneNumber,
+      })
+    );
+  }, [name, phoneNumber, dispatch]);
 
   // Function to build checkout payload
   const buildCheckoutPayload = (
@@ -154,7 +170,12 @@ export default function ChartPage() {
       <section className="flex flex-col items-center justify-center bg-white mt-1">
         <div className="w-full px-6">
           {roomData && <DeliveryRoomInfo roomData={roomData} />}
-          <PersonalInfoForm control={control} disabled={hasPendingPayment} />
+          <PersonalInfoForm
+            control={control}
+            disabled={hasPendingPayment}
+            watch={watch}
+            setValue={setValue}
+          />
         </div>
       </section>
 
@@ -405,3 +426,5 @@ export default function ChartPage() {
     </div>
   );
 }
+
+export default memo(ChartPage);
