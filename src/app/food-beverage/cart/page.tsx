@@ -145,10 +145,7 @@ function ChartPage() {
     }));
 
     // Calculate final price with promo discount
-    const finalPrice = calculateFinalPrice(
-      totalPrice,
-      appliedPromo || { discountAmount: productDiscount }
-    );
+    const finalPrice = calculateFinalPrice(totalPrice, appliedPromo);
     const discountAmount = appliedPromo?.discountAmount || 0;
     const roundedGrandTotal = roundToThousand(finalPrice);
 
@@ -444,10 +441,7 @@ function ChartPage() {
           onBuildPayload={buildCheckoutPayload}
           isFormValid={isValid}
           onPendingPaymentChange={setHasPendingPayment}
-          finalPrice={calculateFinalPrice(
-            totalPrice,
-            appliedPromo || { discountAmount: productDiscount }
-          )}
+          finalPrice={calculateFinalPrice(totalPrice, appliedPromo)}
         />
       </section>
     </div>
