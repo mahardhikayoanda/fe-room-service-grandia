@@ -1,7 +1,7 @@
 import { PromoType } from "@/types/room.type";
 
 export interface AppliedPromo {
-  promo: PromoType;
+  promo?: PromoType;
   discountAmount: number;
 }
 

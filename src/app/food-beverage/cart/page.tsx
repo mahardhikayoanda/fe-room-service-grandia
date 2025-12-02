@@ -145,13 +145,16 @@ function ChartPage() {
     }));
 
     // Calculate final price with promo discount
-    const finalPrice = calculateFinalPrice(totalPrice, appliedPromo);
+    const finalPrice = calculateFinalPrice(
+      totalPrice,
+      appliedPromo || { discountAmount: productDiscount }
+    );
     const discountAmount = appliedPromo?.discountAmount || 0;
     const roundedGrandTotal = roundToThousand(finalPrice);
 
     return {
       room_uuid: roomUUID || "",
-      promo_uuid: appliedPromo?.promo.uuid || "",
+      promo_uuid: appliedPromo?.promo?.uuid || "",
       service_code: "fnb",
       name: formValues.name,
       phone_number: formValues.phone_number,
@@ -399,7 +402,7 @@ function ChartPage() {
                   mb: 0.25,
                 }}
               >
-                {appliedPromo.promo.promo_type === "menu"
+                {appliedPromo.promo?.promo_type === "menu"
                   ? "Product"
                   : "Minimum Transaction"}{" "}
                 Promo Applied!
@@ -410,7 +413,7 @@ function ChartPage() {
                   color: "#065F46",
                 }}
               >
-                - Promo {appliedPromo.promo.name}
+                - Promo {appliedPromo.promo?.name}
               </Typography>
               <Typography
                 sx={{
@@ -419,7 +422,7 @@ function ChartPage() {
                   marginLeft: 0.8,
                 }}
               >
-                {appliedPromo.promo.name}Save{" "}
+                {appliedPromo.promo?.name}Save{" "}
                 {formatRupiah(appliedPromo.discountAmount)}
               </Typography>
             </Box>
@@ -431,7 +434,7 @@ function ChartPage() {
           subtotal={totalPrice}
           discount={appliedPromo?.discountAmount || 0}
           productDiscount={productDiscount}
-          promoName={appliedPromo?.promo.name}
+          promoName={appliedPromo?.promo?.name}
         />
       </section>
 
@@ -441,7 +444,10 @@ function ChartPage() {
           onBuildPayload={buildCheckoutPayload}
           isFormValid={isValid}
           onPendingPaymentChange={setHasPendingPayment}
-          finalPrice={calculateFinalPrice(totalPrice, appliedPromo)}
+          finalPrice={calculateFinalPrice(
+            totalPrice,
+            appliedPromo || { discountAmount: productDiscount }
+          )}
         />
       </section>
     </div>
