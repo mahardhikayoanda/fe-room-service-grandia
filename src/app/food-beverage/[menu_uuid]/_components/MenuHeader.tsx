@@ -94,7 +94,7 @@ export default function MenuHeader({
           {formatRupiah(selling_price)}
           {selling_price < base_price && (
             <span className="line-through text-gray-500 ml-2 text-sm">
-              {base_price}
+              {formatRupiah(base_price)}
             </span>
           )}
         </Typography>

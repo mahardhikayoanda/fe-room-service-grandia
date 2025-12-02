@@ -16,6 +16,7 @@ interface OrderCardProps {
   modifierChoices?: Modifier[];
   notes?: string;
   price: number;
+  priceAfterPromo: number;
   quantity: number;
   onEdit?: () => void;
   onIncrement?: () => void;
@@ -31,6 +32,7 @@ export default function OrderCard({
   modifierChoices,
   notes,
   price,
+  priceAfterPromo,
   quantity,
   onEdit,
   onIncrement,
@@ -112,9 +114,17 @@ export default function OrderCard({
               fontSize: "16px",
               fontWeight: 700,
               color: "#000",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
             }}
           >
-            {formatPrice(price)}
+            {formatPrice(priceAfterPromo)}
+            {priceAfterPromo < price && (
+              <span className="line-through text-gray-500 mr-2 text-sm">
+                {formatPrice(price)}
+              </span>
+            )}
           </Typography>
         </Box>
 

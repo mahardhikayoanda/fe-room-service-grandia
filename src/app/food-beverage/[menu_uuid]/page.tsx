@@ -79,7 +79,8 @@ export default function ModifierItemPage({
       modifiers,
       notes,
       quantity,
-      basePrice: menuData.selling_price,
+      basePrice: menuData.base_price,
+      priceAfterPromo: menuData.selling_price,
       totalPrice: menuData.selling_price * quantity,
     };
 

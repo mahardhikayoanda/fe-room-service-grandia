@@ -71,16 +71,22 @@ function ChartPage() {
   const [appliedPromo, setAppliedPromo] = React.useState<AppliedPromo | null>(
     null
   );
+  const productDiscount = selectedMenus.reduce(
+    (acc, menu) =>
+      acc + (menu.basePrice - menu.priceAfterPromo) * menu.quantity,
+    0
+  );
 
   // promo minimum spend amount - auto-apply best promo
   useEffect(() => {
-    if (roomData?.promos && totalPrice > 0) {
+    // if there is promo and total price is greater than 0 and product discount is equal to 0, apply the best promo
+    if (roomData?.promos && totalPrice > 0 && productDiscount === 0) {
       const bestPromo = findBestPromo(roomData.promos, totalPrice);
       setAppliedPromo(bestPromo);
     } else {
       setAppliedPromo(null);
     }
-  }, [totalPrice, roomData?.promos]);
+  }, [totalPrice, roomData?.promos, selectedMenus]);
 
   // Calculate displayed menus
   const displayedMenus = showAll ? selectedMenus : selectedMenus.slice(0, 2);
@@ -126,7 +132,7 @@ function ChartPage() {
     const orderItems = selectedMenus.map((menu) => ({
       item_uuid: menu.uuid,
       name: menu.name,
-      price: menu.basePrice,
+      price: menu.priceAfterPromo || menu.basePrice,
       quantity: menu.quantity,
       total_price: menu.totalPrice,
       remark: menu.notes || undefined,
@@ -268,6 +274,7 @@ function ChartPage() {
                         modifierChoices={menu.modifiers}
                         notes={menu.notes}
                         price={menu.basePrice}
+                        priceAfterPromo={menu.priceAfterPromo}
                         quantity={menu.quantity}
                         onEdit={() => handleEdit(originalIndex)}
                         onIncrement={() => handleIncrement(originalIndex)}
@@ -391,6 +398,9 @@ function ChartPage() {
                   mb: 0.25,
                 }}
               >
+                {appliedPromo.promo.promo_type === "menu"
+                  ? "Product"
+                  : "Minimum Transaction"}{" "}
                 Promo Applied!
               </Typography>
               <Typography
@@ -410,6 +420,7 @@ function ChartPage() {
           totalItems={cartItemCount}
           subtotal={totalPrice}
           discount={appliedPromo?.discountAmount || 0}
+          productDiscount={productDiscount}
           promoName={appliedPromo?.promo.name}
         />
       </section>

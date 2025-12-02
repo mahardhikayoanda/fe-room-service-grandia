@@ -94,7 +94,7 @@ export default function MenuCard({ item, index, isLastItem }: MenuCardProps) {
               {formatRupiah(item.selling_price)}
               {item.selling_price < item.base_price && (
                 <span className="line-through text-gray-500 mr-2 text-sm">
-                  {item.base_price}
+                  {formatRupiah(item.base_price)}
                 </span>
               )}
             </Typography>

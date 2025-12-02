@@ -57,7 +57,7 @@ export const cartSlice = createSlice({
       if (index >= 0 && index < state.selected_menus.length) {
         const menu = state.selected_menus[index];
         menu.quantity = quantity;
-        menu.totalPrice = menu.basePrice * quantity;
+        menu.totalPrice = (menu.priceAfterPromo || menu.basePrice) * quantity;
       }
     },
 

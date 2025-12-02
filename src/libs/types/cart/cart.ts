@@ -20,6 +20,7 @@ export interface SelectedMenu {
   notes: string;
   quantity: number;
   basePrice: number;
+  priceAfterPromo: number;
   totalPrice: number;
 }
 
