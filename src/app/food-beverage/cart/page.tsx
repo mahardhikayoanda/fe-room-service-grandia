@@ -158,6 +158,7 @@ function ChartPage() {
       payment_method: paymentMethod,
       order_items: orderItems,
       grand_total: finalPrice,
+      raw_total: totalPrice,
       rounded_grand_total: roundedGrandTotal,
       total_discount: discountAmount,
     };

@@ -30,6 +30,7 @@ export interface CheckoutPayload {
   payment_method: "cash" | "charge_to_room" | null;
   order_items: CheckoutOrderItem[];
   grand_total: number;
+  raw_total: number;
   rounded_grand_total: number;
   total_discount: number;
 }
