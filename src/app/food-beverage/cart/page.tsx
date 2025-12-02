@@ -409,7 +409,16 @@ function ChartPage() {
                   color: "#065F46",
                 }}
               >
-                {appliedPromo.promo.name} - Save{" "}
+                - Promo {appliedPromo.promo.name}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  color: "#065F46",
+                  marginLeft: 0.8,
+                }}
+              >
+                {appliedPromo.promo.name}Save{" "}
                 {formatRupiah(appliedPromo.discountAmount)}
               </Typography>
             </Box>
