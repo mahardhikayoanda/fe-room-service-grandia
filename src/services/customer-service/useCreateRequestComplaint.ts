@@ -23,15 +23,15 @@ const useCreateRequestComplaint = (
         await parseObjectRequest(formData)
       );
     },
-    onSuccess(data, variables, context) {
-      options?.onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      options?.onSuccess?.(data, variables, onMutateResult, context);
       queryClient.invalidateQueries({ queryKey: [TAGS.CUSTOMER_SERVICE] });
 
       router.push(`/customer-service/complaint`);
       toast("Request created successfully", { type: "success" });
     },
-    onError(error, variables, context) {
-      options?.onError?.(error, variables, context);
+    onError(error, variables, onMutateResult, context) {
+      options?.onError?.(error, variables, onMutateResult, context);
       toast("Failed to create request", { type: "error" });
     },
   });

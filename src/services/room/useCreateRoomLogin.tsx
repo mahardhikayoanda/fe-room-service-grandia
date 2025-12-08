@@ -20,12 +20,12 @@ const useCreateRoomLogin = (
     mutationFn: async (formData: RoomLoginRequest) => {
       return fetchHelper<RoomLoginResponse>("/room/login", "POST", formData);
     },
-    onSuccess(data, variables, context) {
-      options?.onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      options?.onSuccess?.(data, variables, onMutateResult, context);
       queryClient.invalidateQueries({ queryKey: [TAGS.ROOM_QR] });
     },
-    onError(error: any, variables, context) {
-      options?.onError?.(error, variables, context);
+    onError(error: any, variables, onMutateResult, context) {
+      options?.onError?.(error, variables, onMutateResult, context);
       const errorMessage =
         error?.response?.data?.message || "Failed to verify room QR code";
       toast(errorMessage, { type: "error" });

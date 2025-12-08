@@ -41,12 +41,12 @@ const useCreateCheckoutOrder = (
     mutationFn: async (formData: CheckoutPayload) => {
       return fetchHelper("/order", "POST", formData);
     },
-    onSuccess(data, variables, context) {
-      options?.onSuccess?.(data, variables, context);
+    onSuccess(data, variables, onMutateResult, context) {
+      options?.onSuccess?.(data, variables, onMutateResult, context);
       queryClient.invalidateQueries({ queryKey: [TAGS.CHECKOUT] });
     },
-    onError(error, variables, context) {
-      options?.onError?.(error, variables, context);
+    onError(error, variables, onMutateResult, context) {
+      options?.onError?.(error, variables, onMutateResult, context);
     },
   });
 };

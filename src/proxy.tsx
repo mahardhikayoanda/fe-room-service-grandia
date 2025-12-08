@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 // eslint-disable-next-line consistent-return
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   // Skip middleware for static files
