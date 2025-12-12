@@ -40,7 +40,7 @@ export default function MenuList({
           <div className={`flex items-center gap-1`}>
             <Image
               key={selectedCategory.uuid}
-              src={selectedCategory?.photo.url || "/images/f_and_b/food.png"}
+              src={selectedCategory?.photo?.url || "/images/f_and_b/food.png"}
               alt="Food & Beverage Banner"
               width={200}
               height={200}

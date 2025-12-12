@@ -40,7 +40,7 @@ export default function OurPromoSection() {
               }
             >
               <Image
-                src={promo.photo.url}
+                src={promo.photo?.url || ""}
                 alt={promo.name ?? "Promo Image"}
                 width={1920}
                 height={1080}

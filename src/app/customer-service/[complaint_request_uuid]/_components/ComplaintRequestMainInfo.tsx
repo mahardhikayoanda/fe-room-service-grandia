@@ -46,8 +46,8 @@ export default function ComplaintRequestMainInfo({
           >
             {imageList.map((image) => (
               <Box
-                key={image.photo.uuid}
-                onClick={() => handleImageClick(image.photo.src)}
+                key={image.photo?.uuid || ""}
+                onClick={() => handleImageClick(image.photo?.src || "")}
                 sx={{
                   position: "relative",
                   flex: 1,
@@ -64,8 +64,8 @@ export default function ComplaintRequestMainInfo({
                 }}
               >
                 <Image
-                  src={image.photo.src}
-                  alt={`Complaint image ${image.photo.uuid}`}
+                  src={image.photo?.src || ""}
+                  alt={`Complaint image ${image.photo?.uuid || ""}`}
                   fill
                   style={{ objectFit: "cover" }}
                   sizes="(max-width: 768px) 33vw, 150px"

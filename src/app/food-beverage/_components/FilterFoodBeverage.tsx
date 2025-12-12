@@ -215,7 +215,7 @@ export default function FilterFoodBeverage({
                   }}
                 >
                   <Image
-                    src={cat.photo.url || "/placeholder.svg"}
+                    src={cat.photo?.url || "/placeholder.svg"}
                     alt={cat.name}
                     fill
                     priority
