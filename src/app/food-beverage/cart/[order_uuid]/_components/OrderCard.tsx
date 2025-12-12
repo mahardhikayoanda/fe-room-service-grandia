@@ -126,7 +126,7 @@ export default function OrderCard({ item }: OrderCardProps) {
           }}
         >
           <Image
-            src={item?.image.url || ""}
+            src={item?.image?.url || ""}
             alt={item?.name || ""}
             fill
             style={{ objectFit: "cover" }}

@@ -75,7 +75,7 @@ export default function ModifierItemPage({
     const menuToAdd = {
       uuid: menuData.uuid,
       name: menuData.name,
-      image: menuData.image.url,
+      image: menuData.image?.url,
       modifiers,
       notes,
       quantity,
@@ -178,7 +178,7 @@ export default function ModifierItemPage({
       <MenuHeader
         title={menuData.name}
         subtitle={menuData.description}
-        image={menuData.image.url}
+        image={menuData.image?.url}
         isRecommended={menuData.is_recommended}
         selling_price={menuData.selling_price}
         base_price={menuData.base_price}

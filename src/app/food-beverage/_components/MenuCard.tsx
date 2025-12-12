@@ -21,7 +21,7 @@ export default function MenuCard({ item, index, isLastItem }: MenuCardProps) {
         <div className="flex flex-row-reverse justify-center gap-4 mt-4">
           <div className="w-[90px] h-[90px] relative">
             <Image
-              src={item.image.url}
+              src={item.image?.url}
               alt={item.name}
               fill
               priority
