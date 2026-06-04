@@ -65,6 +65,7 @@ export default function CustomerServicePage() {
       >
         {/* Header */}
         <BackHeader
+          showNotifications
           title="Customer Service"
           subTitle={`Complaint or request for ${roomData?.room_number || "----"}`}
         />

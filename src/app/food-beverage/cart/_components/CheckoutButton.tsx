@@ -15,10 +15,11 @@ import { formatRupiah, roundToThousand } from "@/utils";
 import { toast } from "react-toastify";
 import { clearCart } from "@/libs/store/slices/cartSlice";
 import { CheckoutPayload } from "../_utils/checkout-schema";
+import { saveCustomerPhone } from "@/utils/customerPhone";
 
 interface CheckoutButtonProps {
   onBuildPayload: (
-    paymentMethod: "cash" | "charge_to_room" | null
+    paymentMethod: "cash" | "charge_to_room" | null,
   ) => CheckoutPayload;
   isFormValid: boolean;
   onPendingPaymentChange?: (hasPending: boolean) => void;
@@ -78,7 +79,7 @@ export default function CheckoutButton({
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
     script.setAttribute(
       "data-client-key",
-      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
+      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "",
     );
     script.async = true;
     document.body.appendChild(script);
@@ -90,8 +91,12 @@ export default function CheckoutButton({
 
   // Checkout mutation
   const { mutate, isPending } = useCreateCheckout({
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       toast.success("Order berhasil dibuat!");
+
+      if (variables.phone_number?.trim()) {
+        saveCustomerPhone(variables.phone_number);
+      }
 
       // Navigate based on payment method
       if (paymentMethodId === "non-tunai" && response.data?.snap_token) {

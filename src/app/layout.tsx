@@ -9,6 +9,7 @@ import Providers from "./providers";
 import ThemeProvider from "./ThemeProvider";
 import { QRVerificationProvider } from "@/providers/QRVerificationProvider";
 import { RoomProvider } from "@/providers/RoomProvider";
+import NotificationShell from "@/components/Notification/NotificationShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
           <Providers>
             <RoomProvider>
               <QRVerificationProvider>
+                <NotificationShell />
                 <main className="min-h-screen flex flex-col justify-center items-center">
                   <div className="max-w-sm min-h-screen text-primary-text-color">
                     <ThemeProvider>{children}</ThemeProvider>

@@ -1,13 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
-import Image from "next/image";
-import { Headset, Utensils, UtensilsCrossed } from "lucide-react";
+import { Headset, UtensilsCrossed } from "lucide-react";
+
+import NotificationButton from "@/components/Notification/NotificationButton";
 
 export default function HeroSection() {
   return (
     <>
       <section className="flex flex-col items-center">
         <div className="relative h-[300px] bg-[url('/images/home/bg_hero_section.png')] bg-cover bg-center w-full text-white text-center p-7 bg-black/10">
+          <div className="absolute top-4 right-4 z-10 rounded-full bg-white/90 p-0.5 shadow-md">
+            <NotificationButton />
+          </div>
           <div className="bg-black/30 mt-4 py-[12px] px-[16px]">
             <h1 className="text-4xl font-medium font-quicksand">
               GRANDIA <br /> HOTELS

@@ -37,7 +37,7 @@ export default function FoodBeveragePage() {
       <div
         className={`sticky top-0 z-10 flex flex-col gap-3 bg-white px-6 pt-4 pb-4 transition-shadow duration-150 ease-in-out ${isScrolled ? "shadow-md" : "shadow-none"}`}
       >
-        <BackHeader title="Food & Beverage" />
+        <BackHeader title="Food & Beverage" showNotifications />
         <div className="flex items-center gap-2">
           <TextInput
             size="small"

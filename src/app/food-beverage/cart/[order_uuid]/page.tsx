@@ -14,6 +14,8 @@ import OrderInfoNumber from "./_components/OrderInfoNumber";
 import useGetOrder from "@/services/order/useGetOrder";
 import { formatRupiah } from "@/utils";
 import { toast } from "react-toastify";
+import useNotificationStore from "@/lib/zustand/notification.store";
+import { saveCustomerPhone } from "@/utils/customerPhone";
 
 export default function TrackingOrderPage({
   params,
@@ -25,6 +27,18 @@ export default function TrackingOrderPage({
   const router = useRouter();
 
   const { data, isLoading } = useGetOrder(order_uuid);
+  const setOrderUuid = useNotificationStore((s) => s.setOrderUuid);
+
+  useEffect(() => {
+    setOrderUuid(order_uuid);
+    return () => setOrderUuid(null);
+  }, [order_uuid, setOrderUuid]);
+
+  useEffect(() => {
+    if (data?.phone_number?.trim()) {
+      saveCustomerPhone(data.phone_number);
+    }
+  }, [data?.phone_number]);
 
   // Local state
   const [showAll, setShowAll] = React.useState<boolean>(false);
@@ -39,7 +53,7 @@ export default function TrackingOrderPage({
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
     script.setAttribute(
       "data-client-key",
-      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
+      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "",
     );
     script.async = true;
     document.body.appendChild(script);
@@ -146,6 +160,7 @@ export default function TrackingOrderPage({
           title="Order Details"
           subTitle={`#${data?.order_number || "----"}`}
           withoutBackButton
+          showNotifications
         />
       </div>
 

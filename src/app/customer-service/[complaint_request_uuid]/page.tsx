@@ -66,6 +66,7 @@ export default function TrackingComplaintRequestPage({
           title="Complaint or Request Submitted"
           subTitle={data?.report_number || "----"}
           withoutBackButton
+          showNotifications
         />
       </div>
 

@@ -17,6 +17,9 @@ const TAGS = {
   ORDER: "order",
   CHECKOUT: "checkout",
 
+  // notification
+  NOTIFICATION: "notification",
+
   // test
   TEST: "test",
 };

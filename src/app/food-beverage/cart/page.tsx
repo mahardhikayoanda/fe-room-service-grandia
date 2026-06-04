@@ -35,6 +35,7 @@ import {
   AppliedPromo,
 } from "./_utils/promo-calculator";
 import { useDebounce } from "@uidotdev/usehooks";
+import { saveCustomerPhone } from "@/utils/customerPhone";
 
 function ChartPage() {
   const isScrolled = useScrolled(5);
@@ -69,12 +70,12 @@ function ChartPage() {
   const [hasPendingPayment, setHasPendingPayment] =
     React.useState<boolean>(false);
   const [appliedPromo, setAppliedPromo] = React.useState<AppliedPromo | null>(
-    null
+    null,
   );
   const productDiscount = selectedMenus.reduce(
     (acc, menu) =>
       acc + (menu.basePrice - menu.priceAfterPromo) * menu.quantity,
-    0
+    0,
   );
 
   // promo minimum spend amount - auto-apply best promo
@@ -121,13 +122,16 @@ function ChartPage() {
       setCartPersonalInfo({
         name: name,
         phone_number: phoneNumber,
-      })
+      }),
     );
+    if (phoneNumber?.trim()) {
+      saveCustomerPhone(phoneNumber);
+    }
   }, [name, phoneNumber, dispatch]);
 
   // Function to build checkout payload
   const buildCheckoutPayload = (
-    paymentMethod: "cash" | "charge_to_room" | null
+    paymentMethod: "cash" | "charge_to_room" | null,
   ): CheckoutPayload => {
     const orderItems = selectedMenus.map((menu) => ({
       item_uuid: menu.uuid,
@@ -170,7 +174,7 @@ function ChartPage() {
       <div
         className={`sticky top-0 z-10 flex flex-col gap-3 bg-white px-6 pt-4 pb-4 transition-shadow duration-150 ease-in-out ${isScrolled ? "shadow-md" : "shadow-none"}`}
       >
-        <BackHeader title="Checkout" />
+        <BackHeader title="Checkout" showNotifications />
       </div>
 
       {/* Delivery Room Info */}
@@ -243,7 +247,7 @@ function ChartPage() {
                 {displayedMenus.map((menu, index) => {
                   const isLastItem = index === selectedMenus.length - 1;
                   const originalIndex = selectedMenus.findIndex(
-                    (m) => m.uuid === menu.uuid
+                    (m) => m.uuid === menu.uuid,
                   );
 
                   return (

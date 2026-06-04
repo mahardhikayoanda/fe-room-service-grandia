@@ -24,6 +24,7 @@
     "compressorjs": "^1.2.1",
     "cookies-next": "^6.1.1",
     "dayjs": "^1.11.19",
+    "firebase": "12.14.0",
     "framer-motion": "^12.23.25",
     "lucide-react": "^0.556.0",
     "midtrans-client": "^1.4.3",
@@ -39,7 +40,8 @@
     "sharp": "^0.34.5",
     "swiper": "^12.0.3",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
