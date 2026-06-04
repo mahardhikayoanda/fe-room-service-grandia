@@ -3,14 +3,11 @@
 import { useEffect, useRef } from "react";
 
 import TAGS from "@/constants/tags";
-import {
-  isFirebaseConfigured,
-  isFirebaseVapidKeyInvalid,
-} from "@/lib/firebase/config";
+import { isFirebaseConfigured } from "@/lib/firebase/config";
 import {
   getFirebaseMessaging,
   onMessage,
-  requestFCMToken,
+  registerFCM,
 } from "@/lib/firebase/messaging";
 import { getQueryCLient } from "@/libs/react-query/providers";
 import useRegisterFCMToken from "@/services/notifications/useRegisterFCMToken";
@@ -26,29 +23,34 @@ const useFCM = () => {
   const { mutate: registerToken } = useRegisterFCMToken();
   const { permission, triggerNotification } = useNotification();
   const queryClient = getQueryCLient();
-  const registeredTokenRef = useRef<string | null>(null);
+  const registeredFidRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!isReady || !isFirebaseConfigured()) return;
+    if (!isReady) return;
 
-    let unsubscribe: (() => void) | undefined;
+    let unsubscribeOnMessage: (() => void) | undefined;
+    let unsubscribeOnRegistered: (() => void) | undefined;
 
     const setupFCM = async () => {
-      if (isFirebaseVapidKeyInvalid()) return;
+      if (!(await isFirebaseConfigured())) return;
 
       try {
-        const token = await requestFCMToken();
-        if (!token || token === registeredTokenRef.current) return;
-
-        registeredTokenRef.current = token;
-        localStorage.setItem(FCM_TOKEN_STORAGE_KEY, token);
-
-        registerToken({ phone_number: phoneNumber, token });
-
         const messaging = await getFirebaseMessaging();
         if (!messaging) return;
 
-        unsubscribe = onMessage(messaging, (payload) => {
+        const unsubscribeRegistered = await registerFCM((fid) => {
+          if (!fid || fid === registeredFidRef.current) return;
+
+          registeredFidRef.current = fid;
+          localStorage.setItem(FCM_TOKEN_STORAGE_KEY, fid);
+          registerToken({ phone_number: phoneNumber, token: fid });
+        });
+
+        if (!unsubscribeRegistered) return;
+
+        unsubscribeOnRegistered = unsubscribeRegistered;
+
+        unsubscribeOnMessage = onMessage(messaging, (payload) => {
           const data = parseFCMPayload(payload);
 
           if (permission === "granted" && data.title) {
@@ -63,15 +65,16 @@ const useFCM = () => {
             queryKey: [TAGS.NOTIFICATION, phoneNumber],
           });
         });
-      } catch (error) {
-        console.error("setupFCM error:", error);
+      } catch {
+        // FCM is optional — fail silently when not configured or unsupported
       }
     };
 
     setupFCM();
 
     return () => {
-      unsubscribe?.();
+      unsubscribeOnMessage?.();
+      unsubscribeOnRegistered?.();
     };
   }, [
     isReady,

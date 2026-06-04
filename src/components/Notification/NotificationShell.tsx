@@ -1,14 +1,12 @@
-"use client";
+import FirebaseConfigProvider from "@/lib/firebase/FirebaseConfigProvider";
+import { buildFirebaseClientConfig } from "@/lib/firebase/server-config";
 
-import FCMProvider from "@/components/FCMProvider";
-
-import NotificationDrawer from "./NotificationDrawer";
+import NotificationShellClient from "./NotificationShellClient";
 
 const NotificationShell = () => (
-  <>
-    <NotificationDrawer />
-    <FCMProvider />
-  </>
+  <FirebaseConfigProvider config={buildFirebaseClientConfig()}>
+    <NotificationShellClient />
+  </FirebaseConfigProvider>
 );
 
 export default NotificationShell;

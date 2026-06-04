@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         hostname:
           process.env.NEXT_PUBLIC_API_URL?.split("//")[1]?.split("/")[0] || "",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
     ],
   },
 };

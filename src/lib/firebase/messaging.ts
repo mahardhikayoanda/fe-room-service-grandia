@@ -1,42 +1,41 @@
 import { FirebaseApp, getApps, initializeApp } from "firebase/app";
 import {
   getMessaging,
-  getToken,
   isSupported,
   Messaging,
   onMessage,
+  onRegistered,
+  register,
 } from "firebase/messaging";
 
-import {
-  firebaseConfig,
-  firebaseVapidKey,
-  isFirebaseConfigured,
-} from "./config";
-
-const FCM_VAPID_KEY_HELP =
-  "Set NEXT_PUBLIC_FIREBASE_VAPID_KEY to the Web Push key pair from Firebase Console → Project settings → Cloud Messaging → Web Push certificates (Key pair).";
+import { loadFirebaseClientConfig } from "./config";
+import { toFirebaseAppOptions } from "./server-config";
 
 let firebaseApp: FirebaseApp | null = null;
 
-export const getFirebaseApp = () => {
-  if (!isFirebaseConfigured()) return null;
+export const getFirebaseApp = async () => {
+  const clientConfig = await loadFirebaseClientConfig();
+  if (!clientConfig?.configured) return null;
 
   if (!firebaseApp) {
     firebaseApp = getApps().length
       ? getApps()[0]
-      : initializeApp(firebaseConfig);
+      : initializeApp(toFirebaseAppOptions(clientConfig.config));
   }
 
   return firebaseApp;
 };
 
 export const getFirebaseMessaging = async (): Promise<Messaging | null> => {
-  if (typeof window === "undefined" || !isFirebaseConfigured()) return null;
+  if (typeof window === "undefined") return null;
+
+  const clientConfig = await loadFirebaseClientConfig();
+  if (!clientConfig?.configured) return null;
 
   const supported = await isSupported();
   if (!supported) return null;
 
-  const app = getFirebaseApp();
+  const app = await getFirebaseApp();
   if (!app) return null;
 
   return getMessaging(app);
@@ -57,14 +56,10 @@ export const registerServiceWorker = async () => {
   return registration;
 };
 
-export const requestFCMToken = async () => {
+export const registerFCM = async (onFid: (fid: string) => void) => {
+  const clientConfig = await loadFirebaseClientConfig();
   const messaging = await getFirebaseMessaging();
-  if (!messaging) return null;
-
-  if (!firebaseVapidKey) {
-    console.warn(FCM_VAPID_KEY_HELP);
-    return null;
-  }
+  if (!messaging || !clientConfig?.configured) return null;
 
   const registration = await registerServiceWorker();
   if (!registration) return null;
@@ -72,18 +67,19 @@ export const requestFCMToken = async () => {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return null;
 
+  const unsubscribeOnRegistered = onRegistered(messaging, onFid);
+
   try {
-    return await getToken(messaging, {
-      vapidKey: firebaseVapidKey,
+    await register(messaging, {
+      vapidKey: clientConfig.config.vapidKey,
       serviceWorkerRegistration: registration,
     });
   } catch (error) {
-    if (error instanceof DOMException && error.message.includes("ECDSA")) {
-      console.warn(`${FCM_VAPID_KEY_HELP} Current value is invalid.`);
-    }
-
+    unsubscribeOnRegistered();
     throw error;
   }
+
+  return unsubscribeOnRegistered;
 };
 
-export { getToken, onMessage };
+export { onMessage };
